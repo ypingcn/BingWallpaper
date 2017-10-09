@@ -32,7 +32,7 @@ class BingWallpaper(object):
     def setWallpaper(self):
         if self.de == "xfce":
             self.command = "xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitor0/workspace0/last-image -s "\
-                           +os.getcwd()+"/"+self.imgName
+                           +os.getcwd()+"/imgs/"+self.imgName
 
             os.system(self.command)
 
