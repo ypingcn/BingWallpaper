@@ -12,6 +12,7 @@ class BingWallpaper(object):
         self.json = requests.get(self.baseUrl).json()
         self.imgUrl = "http://cn.bing.com"+self.json['images'][0]['url']
         self.imgName = "BingWallpaper-" + time.strftime("%Y-%m-%d", time.localtime()) + ".jpg"
+        self.imgPath = os.getcwd() + "/imgs/" + self.imgName
 
         self.de = de
         self.command = command
@@ -26,24 +27,31 @@ class BingWallpaper(object):
             return
         if not os.path.exists("imgs"):
             os.mkdir("imgs")
-        with open("imgs/"+self.imgName,"wb") as file:
+        with open(self.imgPath,"wb") as file:
             file.write(imgResponse.content)
 
     def setWallpaper(self):
         if self.de == "xfce":
             self.command = "xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitor0/workspace0/last-image -s "\
-                           +os.getcwd()+"/imgs/"+self.imgName
+                           +self.imgPath
 
             os.system(self.command)
-
-            content = self.json['images'][0]['copyright']
-            lastIndex = content.rfind("(")
-
-            os.system("notify-send "+self.imgName+":"+content[:lastIndex])
+            self.notify()
+            
+        elif self.de == "cinnamon":
+            self.command = "gsettings set org.cinnamon.desktop.background picture-uri  \"file:///"\
+                           +self.imgPath+"\""
+            print(self.command)
+            os.system(self.command)
+            self.notify()
 
         else:
             print("not support desktop environment:",self.de)
-
+    
+    def notify(self):
+        content = self.json['images'][0]['copyright']
+        lastIndex = content.rfind("(")
+        os.system("notify-send "+self.imgName+":"+content[:lastIndex])
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
