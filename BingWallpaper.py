@@ -45,6 +45,13 @@ class BingWallpaper(object):
             os.system(self.command)
             self.notify()
 
+        elif self.de == "deepin":
+            self.command = "gsettings set com.deepin.wrap.gnome.desktop.background picture-uri \"file:///"\
+                           +self.imgPath+"\""
+            print(self.command)
+            os.system(self.command)
+            self.notify()
+
         else:
             print("not support desktop environment:",self.de)
     
