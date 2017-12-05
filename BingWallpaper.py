@@ -12,7 +12,7 @@ class BingWallpaper(object):
         self.json = requests.get(self.baseUrl).json()
         self.imgUrl = "http://cn.bing.com"+self.json['images'][0]['url']
         self.imgName = "BingWallpaper-" + time.strftime("%Y-%m-%d", time.localtime()) + ".jpg"
-        self.imgPath = os.getcwd() + "/imgs/" + self.imgName
+        self.imgPath = os.path.expanduser('~') + "/BingWallpaper/" + self.imgName
 
         self.de = de
         self.command = command
@@ -25,8 +25,8 @@ class BingWallpaper(object):
         if imgResponse.status_code != 200:
             print("network error: "+str(imgResponse.status_code))
             return
-        if not os.path.exists("imgs"):
-            os.mkdir("imgs")
+        if not os.path.exists(os.path.expanduser('~') + "/BingWallpaper/"):
+            os.mkdir(os.path.expanduser('~') + "/BingWallpaper/")
         with open(self.imgPath,"wb") as file:
             file.write(imgResponse.content)
 
