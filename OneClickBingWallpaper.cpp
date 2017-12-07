@@ -52,17 +52,17 @@ void OneClickBingWallpaper::updateWallpaper()
 
     if(QObject::sender() == cinnamonAction)
     {
-        p.start("python3 /usr/bin/OneClickGo/BingWallpaper.py -d cinnamon");
+        p.start("python3 /usr/bin/OneClickBingWallpaper/BingWallpaper.py -d cinnamon");
         p.waitForFinished();
     }
     else if(QObject::sender() == xfceAction)
     {
-        p.start("python3 /usr/bin/OneClickGo/BingWallpaper.py -d xfce");
+        p.start("python3 /usr/bin/OneClickBingWallpaper/BingWallpaper.py -d xfce");
         p.waitForFinished();
     }
     else if(QObject::sender() == deepinAction)
     {
-        p.start("python3 /usr/bin/OneClickGo/BingWallpaper.py -d deepin");
+        p.start("python3 /usr/bin/OneClickBingWallpaper/BingWallpaper.py -d deepin");
         p.waitForFinished();
     }
 }
