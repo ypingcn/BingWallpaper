@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>OneClickBingWallpaper.png</file>
+    </qresource>
+</RCC>
