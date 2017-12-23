@@ -21,6 +21,7 @@ private:
     QAction * cinnamonAction;
     QAction * xfceAction;
     QAction * deepinAction;
+    QAction * wmAction;
     QAction * quitAction;
     QString clickCommand,doubleClickCommand;
 private slots:

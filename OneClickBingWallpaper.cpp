@@ -19,11 +19,14 @@ OneClickBingWallpaper::OneClickBingWallpaper(QWidget *parent)
     connect(xfceAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
     deepinAction = new QAction(tr("Deepin"),this);
     connect(deepinAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
+    wmAction = new QAction(tr("WM"),this);
+    connect(wmAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
     quitAction = new QAction(tr("Quit"),this);
     connect(quitAction,SIGNAL(triggered()),this,SLOT(close()));
     trayMenu->addAction(cinnamonAction);
     trayMenu->addAction(xfceAction);
     trayMenu->addAction(deepinAction);
+    trayMenu->addAction(wmAction);
     trayMenu->addSeparator();
     trayMenu->addAction(quitAction);
     trayIcon->setContextMenu(trayMenu);
@@ -63,6 +66,11 @@ void OneClickBingWallpaper::updateWallpaper()
     else if(QObject::sender() == deepinAction)
     {
         p.start("python3 /usr/bin/OneClickBingWallpaper/BingWallpaper.py -d deepin");
+        p.waitForFinished();
+    }
+    else if(QObject::sender() == wmAction)
+    {
+        p.start("python3 /usr/bin/OneClickBingWallpaper/BingWallpaper.py -d wm");
         p.waitForFinished();
     }
 }

@@ -48,7 +48,7 @@ class BingWallpaper(object):
             self.log("xfce command status:"+str(os.system(self.command)))
             self.notify()
             self.log("xfce setting finish")
-            
+
         elif self.de == "cinnamon":
             self.command = "gsettings set org.cinnamon.desktop.background picture-uri  \"file:///"\
                            +self.imgPath+"\""
@@ -65,9 +65,16 @@ class BingWallpaper(object):
             self.notify()
             self.log("deepin setting finish")
 
+        elif self.de == "wm":
+            self.command = "feh --bg-fill "\
+                           +self.imgPath
+            self.log("feh command status:" + str(os.system(self.command)))
+            self.notify()
+            self.log("feh setting finish")
+
         else:
             self.log("not support desktop environment:"+str(self.de))
-    
+
     def notify(self):
         content = self.json['images'][0]['copyright']
         lastIndex = content.rfind("(")
