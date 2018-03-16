@@ -99,6 +99,10 @@ class BingWallpaper(object):
             self.notify()
             Logger.info("feh setting finish")
 
+        elif self.command:
+            command = self.command.replace("{{}}",self.imgPath)
+            Logger.info(self.command + " command status:" + str(os.system(command)))
+
         else:
             Logger.info("not support desktop environment:"+str(self.de))
 
@@ -111,7 +115,7 @@ class BingWallpaper(object):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("-d",help="desktop environment: xfce etc")
-    parser.add_argument("-c",help="command in your device to set desktop background")
+    parser.add_argument("-c",help="command in your device to set desktop background,{{}} will be replaced with the true images path(not end with \)")
     args = parser.parse_args()
 
     BingWallpaper(args.d,args.c)
