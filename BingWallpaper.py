@@ -58,7 +58,6 @@ class BingWallpaper(object):
         self.imgUrl = "http://cn.bing.com"+self.json['images'][0]['url']
         self.imgName = "BingWallpaper-" + time.strftime("%Y-%m-%d", time.localtime()) + ".jpg"
         self.imgPath = os.path.expanduser('~') + "/BingWallpaper/" + self.imgName
-        self.logPath = os.path.expanduser('~') + "/BingWallpaper/.oneclickbingwallpaper.log"
 
         self.de = de
         self.command = command
