@@ -124,6 +124,10 @@ class BingWallpaper(object):
         content = self.json['images'][0]['copyright']
         lastIndex = content.rfind("(")
         os.system("notify-send "+self.imgName+":"+content[:lastIndex])
+    
+    def detect(self):
+        session = os.getenv("DESKTOP_SESSION")
+        #TODO
 
 
 if __name__ == '__main__':
