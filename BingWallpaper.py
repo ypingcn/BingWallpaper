@@ -97,6 +97,21 @@ class BingWallpaper(object):
             Logger.info("feh command status:" + str(os.system(self.command)))
             self.notify()
             Logger.info("feh setting finish")
+            
+        elif self.de == "kde":
+            plasmashell = '''
+                var Desktops = desktops();
+                d = Desktops[0];
+                d.wallpaperPlugin= "org.kde.image";
+                d.currentConfigGroup = Array("Wallpaper","org.kde.image","General");
+                d.writeConfig("Image","#");
+            '''.replace("#",self.imgPath)
+            self.command = "qdbus org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript \'#\'".replace("#",plasmashell)
+            Logger.info("kde command status:" + str(os.system(self.command)))
+            self.notify()
+            # if 'sh: 1: notify-send: not found' in kde , please install libnotify-bin
+            # sudo apt install libnotify-bin
+            Logger.info("kde setting finish")
 
         elif self.command:
             command = self.command.replace("{{}}",self.imgPath)
