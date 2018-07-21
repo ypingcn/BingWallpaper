@@ -44,8 +44,8 @@ class Downloader(object):
         lastIndex = fileName.rfind("/")
         if lastIndex:
             if not os.path.exists(fileName[:lastIndex]):
-                Logger.info(fileName[:lastIndex] + " not exist,repairing ...")
                 os.mkdir(fileName[:lastIndex])
+                Logger.info(fileName[:lastIndex] + " not exist,repairing ...")
 
         with open(fileName,"wb") as file:
             file.write(downloadReponse.content)
