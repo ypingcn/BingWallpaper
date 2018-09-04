@@ -59,7 +59,7 @@ void OneClickBingWallpaper::updateWallpaper()
 
     if(!QFile::exists(pyFilePath))
     {
-        QMessageBox::warning(nullptr, tr("Python File Not Found"), tr("Python file not found,please reinstall.\nClick YES to download page"), QMessageBox::Yes, QMessageBox::No);
+        QMessageBox::warning(nullptr, tr("Python File Not Found"), tr("Python file not found,please reinstall."), QMessageBox::Yes);
         pyFileVaild = false;
     }
     else
