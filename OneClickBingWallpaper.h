@@ -8,6 +8,8 @@
 #include <QAction>
 #include <QMenu>
 
+#define PYFILE_MD5_CHECK
+
 class OneClickBingWallpaper : public QWidget
 {
     Q_OBJECT

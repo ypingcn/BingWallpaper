@@ -64,6 +64,7 @@ void OneClickBingWallpaper::updateWallpaper()
     }
     else
     {
+#ifdef PYFILE_MD5_CHECK
         QFile pyFile(pyFilePath);
         if (pyFile.open(QFile::ReadOnly))
         {
@@ -79,6 +80,7 @@ void OneClickBingWallpaper::updateWallpaper()
                     pyFileVaild = false;
             }
         }
+#endif // PYFILE_MD5_CHECK
     }
 
     QProcess p(0);
