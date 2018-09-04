@@ -101,4 +101,12 @@ ENV/
 .mypy_cache/
 
 
+.*/
+
 *.user
+.qmake.stash
+Makefile
+moc_*
+qrc_*
+*.o
+OneClickBingWallpaper
