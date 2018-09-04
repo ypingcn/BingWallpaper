@@ -23,7 +23,7 @@ private:
     QAction * deepinAction;
     QAction * wmAction;
     QAction * quitAction;
-    QString clickCommand,doubleClickCommand;
+
 private slots:
     void trayIconActivated(QSystemTrayIcon::ActivationReason);
     void updateWallpaper();
