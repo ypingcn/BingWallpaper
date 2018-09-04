@@ -4,6 +4,8 @@
 #include <QProcess>
 #include <QFile>
 #include <QMessageBox>
+#include <QCryptographicHash>
+#include <QDebug>
 
 OneClickBingWallpaper::OneClickBingWallpaper(QWidget *parent)
     : QWidget(parent)
@@ -53,32 +55,54 @@ void OneClickBingWallpaper::trayIconActivated(QSystemTrayIcon::ActivationReason 
 
 void OneClickBingWallpaper::updateWallpaper()
 {
-    QProcess p(0);
+    bool pyFileVaild = true;
 
     if(!QFile::exists(pyFilePath))
     {
         QMessageBox::warning(nullptr, tr("Python File Not Found"), tr("Python file not found,please reinstall.\nClick YES to download page"), QMessageBox::Yes, QMessageBox::No);
-        return;
+        pyFileVaild = false;
     }
-    
-    if(QObject::sender() == cinnamonAction)
+    else
     {
-        p.start("python3 /usr/bin/OneClickBingWallpaper/BingWallpaper.py -d cinnamon");
-        p.waitForFinished();
+        QFile pyFile(pyFilePath);
+        if (pyFile.open(QFile::ReadOnly))
+        {
+            QCryptographicHash hash(QCryptographicHash::Md5);
+            hash.addData(&pyFile);
+            QString md5 = hash.result().toHex();
+            qDebug() << pyFilePath << md5;
+            if (md5 != pyFileMD5)
+            {
+                QMessageBox::StandardButton choice;
+                choice = QMessageBox::information(nullptr, tr("Python File Have Modified"), tr("Python File Have Modified\nClick YES to ignore it"), QMessageBox::Yes, QMessageBox::No);
+                if (choice == QMessageBox::No)
+                    pyFileVaild = false;
+            }
+        }
     }
-    else if(QObject::sender() == xfceAction)
+
+    QProcess p(0);
+    if (pyFileVaild)
     {
-        p.start("python3 /usr/bin/OneClickBingWallpaper/BingWallpaper.py -d xfce");
-        p.waitForFinished();
-    }
-    else if(QObject::sender() == deepinAction)
-    {
-        p.start("python3 /usr/bin/OneClickBingWallpaper/BingWallpaper.py -d deepin");
-        p.waitForFinished();
-    }
-    else if(QObject::sender() == wmAction)
-    {
-        p.start("python3 /usr/bin/OneClickBingWallpaper/BingWallpaper.py -d wm");
-        p.waitForFinished();
+        if (QObject::sender() == cinnamonAction)
+        {
+            p.start("python3 "+pyFilePath+" -d cinnamon");
+            p.waitForFinished();
+        }
+        else if (QObject::sender() == xfceAction)
+        {
+            p.start("python3 "+pyFilePath+" -d xfce");
+            p.waitForFinished();
+        }
+        else if (QObject::sender() == deepinAction)
+        {
+            p.start("python3 "+pyFilePath+" -d deepin");
+            p.waitForFinished();
+        }
+        else if (QObject::sender() == wmAction)
+        {
+            p.start("python3 "+pyFilePath+" -d wm");
+            p.waitForFinished();
+        }
     }
 }
