@@ -2,6 +2,8 @@
 
 #include <QDir>
 #include <QProcess>
+#include <QFile>
+#include <QMessageBox>
 
 OneClickBingWallpaper::OneClickBingWallpaper(QWidget *parent)
     : QWidget(parent)
@@ -53,6 +55,12 @@ void OneClickBingWallpaper::updateWallpaper()
 {
     QProcess p(0);
 
+    if(!QFile::exists(pyFilePath))
+    {
+        QMessageBox::warning(nullptr, tr("Python File Not Found"), tr("Python file not found,please reinstall.\nClick YES to download page"), QMessageBox::Yes, QMessageBox::No);
+        return;
+    }
+    
     if(QObject::sender() == cinnamonAction)
     {
         p.start("python3 /usr/bin/OneClickBingWallpaper/BingWallpaper.py -d cinnamon");

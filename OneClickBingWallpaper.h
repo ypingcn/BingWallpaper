@@ -24,6 +24,8 @@ private:
     QAction * wmAction;
     QAction * quitAction;
 
+    const QString pyFilePath = "/usr/bin/OneClickBingWallpaper/BingWallpaper.py";
+
 private slots:
     void trayIconActivated(QSystemTrayIcon::ActivationReason);
     void updateWallpaper();
