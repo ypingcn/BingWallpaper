@@ -1,5 +1,9 @@
 #include "OneClickBingWallpaper.h"
 
+#include <DApplication>
+
+DWIDGET_USE_NAMESPACE
+
 #include <QDir>
 #include <QProcess>
 #include <QFile>
@@ -26,13 +30,18 @@ OneClickBingWallpaper::OneClickBingWallpaper(QWidget *parent)
     wmAction = new QAction(tr("WM"),this);
     connect(wmAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
     quitAction = new QAction(tr("Quit"),this);
-    connect(quitAction,SIGNAL(triggered()),this,SLOT(close()));
+    connect(quitAction,&QAction::triggered,[](){
+        DApplication * app;
+        app->exit(0);
+    });
+
     trayMenu->addAction(cinnamonAction);
     trayMenu->addAction(xfceAction);
     trayMenu->addAction(deepinAction);
     trayMenu->addAction(wmAction);
     trayMenu->addSeparator();
     trayMenu->addAction(quitAction);
+    
     trayIcon->setContextMenu(trayMenu);
 }
 
