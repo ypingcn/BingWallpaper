@@ -62,7 +62,8 @@ class BingWallpaper(object):
         self.de = de
         self.command = command
 
-        Downloader.get(self.imgUrl,self.imgPath)
+        if not os.path.exists(self.imgPath):
+            Downloader.get(self.imgUrl,self.imgPath)
 
         self.setWallpaper()
 
