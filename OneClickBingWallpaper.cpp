@@ -1,4 +1,5 @@
 #include "OneClickBingWallpaper.h"
+#include "OneClickBingWallpaperConfig.h"
 
 #include <DApplication>
 
@@ -66,7 +67,7 @@ void OneClickBingWallpaper::updateWallpaper()
 {
     bool pyFileVaild = true;
 
-    if(!QFile::exists(pyFilePath))
+    if(!QFile::exists(OneClickBingWallpaperConfig::pyFilePath))
     {
         QMessageBox::warning(nullptr, tr("Python File Not Found"), tr("Python file not found,please reinstall."), QMessageBox::Yes);
         pyFileVaild = false;
@@ -74,7 +75,7 @@ void OneClickBingWallpaper::updateWallpaper()
     else
     {
 #ifdef PYFILE_MD5_CHECK
-        QFile pyFile(pyFilePath);
+        QFile pyFile(OneClickBingWallpaperConfig::pyFilePath);
         if (pyFile.open(QFile::ReadOnly))
         {
             QCryptographicHash hash(QCryptographicHash::Md5);
@@ -97,22 +98,22 @@ void OneClickBingWallpaper::updateWallpaper()
     {
         if (QObject::sender() == cinnamonAction)
         {
-            p.start("python3 "+pyFilePath+" -d cinnamon");
+            p.start("python3 "+OneClickBingWallpaperConfig::pyFilePath+" -d cinnamon");
             p.waitForFinished();
         }
         else if (QObject::sender() == xfceAction)
         {
-            p.start("python3 "+pyFilePath+" -d xfce");
+            p.start("python3 "+OneClickBingWallpaperConfig::pyFilePath+" -d xfce");
             p.waitForFinished();
         }
         else if (QObject::sender() == deepinAction)
         {
-            p.start("python3 "+pyFilePath+" -d deepin");
+            p.start("python3 "+OneClickBingWallpaperConfig::pyFilePath+" -d deepin");
             p.waitForFinished();
         }
         else if (QObject::sender() == wmAction)
         {
-            p.start("python3 "+pyFilePath+" -d wm");
+            p.start("python3 "+OneClickBingWallpaperConfig::pyFilePath+" -d wm");
             p.waitForFinished();
         }
     }

@@ -27,10 +27,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         main.cpp \
-    OneClickBingWallpaper.cpp
+    OneClickBingWallpaper.cpp \
+    OneClickBingWallpaperConfig.cpp
 
 HEADERS += \
-    OneClickBingWallpaper.h
+    OneClickBingWallpaper.h \
+    OneClickBingWallpaperConfig.h
 
 RESOURCES += \
     img.qrc
