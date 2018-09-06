@@ -81,8 +81,8 @@ void OneClickBingWallpaper::updateWallpaper()
             QCryptographicHash hash(QCryptographicHash::Md5);
             hash.addData(&pyFile);
             QString md5 = hash.result().toHex();
-            qDebug() << pyFilePath << md5;
-            if (md5 != pyFileMD5)
+            qDebug() << OneClickBingWallpaperConfig::pyFilePath << md5;
+            if (md5 != OneClickBingWallpaperConfig::pyFileMD5)
             {
                 QMessageBox::StandardButton choice;
                 choice = QMessageBox::information(nullptr, tr("Python File Have Modified"), tr("Python File Have Modified\nClick YES to ignore it"), QMessageBox::Yes, QMessageBox::No);
