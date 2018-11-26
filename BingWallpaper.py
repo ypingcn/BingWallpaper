@@ -113,6 +113,18 @@ class BingWallpaper(object):
             # if 'sh: 1: notify-send: not found' in kde , please install libnotify-bin
             # sudo apt install libnotify-bin
             Logger.info("kde setting finish")
+        
+        elif self.de == "gnome":
+            shell = '''
+                gsettings set org.gnome.desktop.background draw-background false && 
+                gsettings set org.gnome.desktop.background picture-uri file://# && 
+                gsettings set org.gnome.desktop.background draw-background true
+            '''
+            self.command = shell.replace("#",self.imgPath)
+            Logger.info("kde command status:" + str(os.system(self.command)))
+            self.notify()
+            Logger.info("gnome setting finish")
+
 
         elif self.command:
             command = self.command.replace("{{}}",self.imgPath)
