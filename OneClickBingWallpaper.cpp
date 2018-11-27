@@ -28,6 +28,10 @@ OneClickBingWallpaper::OneClickBingWallpaper(QWidget *parent)
     connect(xfceAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
     deepinAction = new QAction(tr("Deepin"),this);
     connect(deepinAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
+    kdeAction = new QAction(tr("KDE"),this);
+    connect(kdeAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
+    gnomeAction = new QAction(tr("Gnome"),this);
+    connect(gnomeAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
     wmAction = new QAction(tr("WM"),this);
     connect(wmAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
     quitAction = new QAction(tr("Quit"),this);
@@ -39,6 +43,8 @@ OneClickBingWallpaper::OneClickBingWallpaper(QWidget *parent)
     trayMenu->addAction(cinnamonAction);
     trayMenu->addAction(xfceAction);
     trayMenu->addAction(deepinAction);
+    trayMenu->addAction(kdeAction);
+    trayMenu->addAction(gnomeAction);
     trayMenu->addAction(wmAction);
     trayMenu->addSeparator();
     trayMenu->addAction(quitAction);
@@ -109,6 +115,16 @@ void OneClickBingWallpaper::updateWallpaper()
         else if (QObject::sender() == deepinAction)
         {
             p.start("python3 "+OneClickBingWallpaperConfig::pyFilePath+" -d deepin");
+            p.waitForFinished();
+        }
+        else if (QObject::sender() == kdeAction)
+        {
+            p.start("python3 "+OneClickBingWallpaperConfig::pyFilePath+" -d kde");
+            p.waitForFinished();
+        }
+        else if (QObject::sender() == gnomeAction)
+        {
+            p.start("python3 "+OneClickBingWallpaperConfig::pyFilePath+" -d gnome");
             p.waitForFinished();
         }
         else if (QObject::sender() == wmAction)

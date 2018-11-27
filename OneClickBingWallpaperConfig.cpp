@@ -1,4 +1,4 @@
 #include "OneClickBingWallpaperConfig.h"
 
-QString OneClickBingWallpaperConfig::pyFileMD5 = "7781a1b57cd5bc10f9f67e16db2ab560";
+QString OneClickBingWallpaperConfig::pyFileMD5 = "6ce7f74aeecc5775a41f15eeb73176dc";
 QString OneClickBingWallpaperConfig::pyFilePath = "/usr/bin/OneClickBingWallpaper/BingWallpaper.py";
