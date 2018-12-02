@@ -1,5 +1,15 @@
 <RCC>
     <qresource prefix="/">
         <file>OneClickBingWallpaper.png</file>
+        <file>icons/16x16/OneClickBingWallpaper.png</file>
+        <file>icons/22x22/OneClickBingWallpaper.png</file>
+        <file>icons/24x24/OneClickBingWallpaper.png</file>
+        <file>icons/28x28/OneClickBingWallpaper.png</file>
+        <file>icons/32x32/OneClickBingWallpaper.png</file>
+        <file>icons/36x36/OneClickBingWallpaper.png</file>
+        <file>icons/48x48/OneClickBingWallpaper.png</file>
+        <file>icons/64x64/OneClickBingWallpaper.png</file>
+        <file>icons/72x72/OneClickBingWallpaper.png</file>
+        <file>icons/96x96/OneClickBingWallpaper.png</file>
     </qresource>
 </RCC>

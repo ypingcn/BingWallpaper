@@ -39,6 +39,16 @@ RESOURCES += \
 
 
 icons.files = OneClickBingWallpaper.png
+icons_16x16.files = icons/16x16/OneClickBingWallpaper.png
+icons_22x22.files = icons/22x22/OneClickBingWallpaper.png
+icons_24x24.files = icons/24x24/OneClickBingWallpaper.png
+icons_28x28.files = icons/28x28/OneClickBingWallpaper.png
+icons_32x32.files = icons/32x32/OneClickBingWallpaper.png
+icons_36x36.files = icons/36x36/OneClickBingWallpaper.png
+icons_48x48.files = icons/48x48/OneClickBingWallpaper.png
+icons_64x64.files = icons/64x64/OneClickBingWallpaper.png
+icons_72x72.files = icons/72x72/OneClickBingWallpaper.png
+icons_96x96.files = icons/96x96/OneClickBingWallpaper.png
 desktop.files = OneClickBingWallpaper.desktop
 
 isEmpty(INSTALL_PREFIX) {
@@ -49,7 +59,17 @@ isEmpty(INSTALL_PREFIX) {
 unix: {
     desktop.path = $$INSTALL_PREFIX/share/applications
     icons.path = $$INSTALL_PREFIX/share/icons/hicolor/128x128/apps
-    INSTALLS += desktop icons
+    icons_16x16.path = $$INSTALL_PREFIX/share/icons/hicolor/16x16/apps
+    icons_22x22.path = $$INSTALL_PREFIX/share/icons/hicolor/22x22/apps
+    icons_24x24.path = $$INSTALL_PREFIX/share/icons/hicolor/24x24/apps
+    icons_28x28.path = $$INSTALL_PREFIX/share/icons/hicolor/28x28/apps
+    icons_32x32.path = $$INSTALL_PREFIX/share/icons/hicolor/32x32/apps
+    icons_36x36.path = $$INSTALL_PREFIX/share/icons/hicolor/36x36/apps
+    icons_48x48.path = $$INSTALL_PREFIX/share/icons/hicolor/48x48/apps
+    icons_64x64.path = $$INSTALL_PREFIX/share/icons/hicolor/64x64/apps
+    icons_72x72.path = $$INSTALL_PREFIX/share/icons/hicolor/72x72/apps
+    icons_96x96.path = $$INSTALL_PREFIX/share/icons/hicolor/96x96/apps
+    INSTALLS += desktop icons icons_16x16 icons_22x22 icons_24x24 icons_28x28 icons_32x32 icons_36x36 icons_48x48 icons_64x64 icons_72x72 icons_96x96
 }
 
 target.files = OneClickBingWallpaper
