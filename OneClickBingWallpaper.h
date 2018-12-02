@@ -19,7 +19,8 @@ public:
     ~OneClickBingWallpaper();
 private:
     QSystemTrayIcon * trayIcon;
-    QMenu * trayMenu;
+    QMenu * trayMenu, * moreMenu;
+    QAction * autoAction;
     QAction * cinnamonAction;
     QAction * xfceAction;
     QAction * deepinAction;

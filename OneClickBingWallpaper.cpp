@@ -22,6 +22,8 @@ OneClickBingWallpaper::OneClickBingWallpaper(QWidget *parent)
     connect(trayIcon,SIGNAL(activated(QSystemTrayIcon::ActivationReason)),this,SLOT(trayIconActivated(QSystemTrayIcon::ActivationReason)));
 
     trayMenu = new QMenu(this);
+    moreMenu = new QMenu(tr("More"),this);
+
     cinnamonAction = new QAction(tr("Cinnamon"),this);
     connect(cinnamonAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
     xfceAction = new QAction(tr("Xfce"),this);
@@ -34,18 +36,23 @@ OneClickBingWallpaper::OneClickBingWallpaper(QWidget *parent)
     connect(gnomeAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
     wmAction = new QAction(tr("WM"),this);
     connect(wmAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
+
+    autoAction = new QAction(tr("Auto"),this);
+    connect(autoAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
+
+    QList<QAction*> actionList;
+    actionList << cinnamonAction << xfceAction << deepinAction \
+                << kdeAction << gnomeAction << wmAction;
+
     quitAction = new QAction(tr("Quit"),this);
     connect(quitAction,&QAction::triggered,[](){
         DApplication * app;
         app->exit(0);
     });
-
-    trayMenu->addAction(cinnamonAction);
-    trayMenu->addAction(xfceAction);
-    trayMenu->addAction(deepinAction);
-    trayMenu->addAction(kdeAction);
-    trayMenu->addAction(gnomeAction);
-    trayMenu->addAction(wmAction);
+    
+    moreMenu->addActions(actionList);
+    trayMenu->addAction(autoAction);
+    trayMenu->addMenu(moreMenu);
     trayMenu->addSeparator();
     trayMenu->addAction(quitAction);
     
@@ -102,7 +109,12 @@ void OneClickBingWallpaper::updateWallpaper()
     QProcess p(0);
     if (pyFileVaild)
     {
-        if (QObject::sender() == cinnamonAction)
+        if (QObject::sender() == autoAction)
+        {
+            p.start("python3 "+OneClickBingWallpaperConfig::pyFilePath+" --auto");
+            p.waitForFinished();
+        }
+        else if (QObject::sender() == cinnamonAction)
         {
             p.start("python3 "+OneClickBingWallpaperConfig::pyFilePath+" -d cinnamon");
             p.waitForFinished();
