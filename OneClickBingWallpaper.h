@@ -22,12 +22,12 @@ private:
     QMenu * trayMenu, * moreMenu;
     QAction * autoAction;
     QAction * cinnamonAction;
-    QAction * xfceAction;
     QAction * deepinAction;
-    QAction * wmAction;
     QAction * gnomeAction;
     QAction * kdeAction;
     QAction * mateAction;
+    QAction * wmAction;
+    QAction * xfceAction;
     QAction * quitAction;
 
 private slots:

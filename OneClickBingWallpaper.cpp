@@ -26,25 +26,25 @@ OneClickBingWallpaper::OneClickBingWallpaper(QWidget *parent)
 
     cinnamonAction = new QAction(tr("Cinnamon"),this);
     connect(cinnamonAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
-    xfceAction = new QAction(tr("Xfce"),this);
-    connect(xfceAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
     deepinAction = new QAction(tr("Deepin"),this);
     connect(deepinAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
-    kdeAction = new QAction(tr("KDE"),this);
-    connect(kdeAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
     gnomeAction = new QAction(tr("Gnome"),this);
     connect(gnomeAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
-    wmAction = new QAction(tr("WM"),this);
-    connect(wmAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
+    kdeAction = new QAction(tr("KDE"),this);
+    connect(kdeAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
     mateAction = new QAction(tr("Mate"),this);
     connect(mateAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
+    wmAction = new QAction(tr("WM"),this);
+    connect(wmAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
+    xfceAction = new QAction(tr("Xfce"),this);
+    connect(xfceAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
 
     autoAction = new QAction(tr("Auto"),this);
     connect(autoAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
 
     QList<QAction*> actionList;
-    actionList << cinnamonAction << xfceAction << deepinAction \
-                << kdeAction << gnomeAction << wmAction << mateAction;
+    actionList << cinnamonAction << deepinAction << gnomeAction \
+                << kdeAction << mateAction << wmAction << xfceAction;
 
     quitAction = new QAction(tr("Quit"),this);
     connect(quitAction,&QAction::triggered,[](){

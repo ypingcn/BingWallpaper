@@ -66,22 +66,14 @@ class BingWallpaper(object):
             Downloader.get(self.imgUrl,self.imgPath)
 
     def setWallpaper(self):
-        if self.de == "xfce":
-            self.command = "xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitor0/workspace0/last-image -s "\
-                           +self.imgPath
-
-            Logger.info("xfce command status:"+str(os.system(self.command)))
-            self.notify()
-            Logger.info("xfce setting finish")
-
-        elif self.de == "cinnamon":
+        if self.de == "cinnamon":
             self.command = "gsettings set org.cinnamon.desktop.background picture-uri  \"file:///"\
                            +self.imgPath+"\""
 
             Logger.info("cinnamon command status:" + str(os.system(self.command)))
             self.notify()
             Logger.info("cinnamon setting finish")
-
+        
         elif self.de == "deepin":
             self.command = "gsettings set com.deepin.wrap.gnome.desktop.background picture-uri \"file:///"\
                            +self.imgPath+"\""
@@ -89,14 +81,18 @@ class BingWallpaper(object):
             Logger.info("deepin command status:" + str(os.system(self.command)))
             self.notify()
             Logger.info("deepin setting finish")
-
-        elif self.de == "wm":
-            self.command = "feh --bg-fill "\
-                           +self.imgPath
-            Logger.info("feh command status:" + str(os.system(self.command)))
+        
+        elif self.de == "gnome":
+            shell = '''
+                gsettings set org.gnome.desktop.background draw-background false && 
+                gsettings set org.gnome.desktop.background picture-uri file://# && 
+                gsettings set org.gnome.desktop.background draw-background true
+            '''
+            self.command = shell.replace("#",self.imgPath)
+            Logger.info("gnome command status:" + str(os.system(self.command)))
             self.notify()
-            Logger.info("feh setting finish")
-            
+            Logger.info("gnome setting finish")
+        
         elif self.de == "kde":
             plasmashell = '''
                 var Desktops = desktops();
@@ -111,23 +107,27 @@ class BingWallpaper(object):
             # if 'sh: 1: notify-send: not found' in kde , please install libnotify-bin
             # sudo apt install libnotify-bin
             Logger.info("kde setting finish")
-        
-        elif self.de == "gnome":
-            shell = '''
-                gsettings set org.gnome.desktop.background draw-background false && 
-                gsettings set org.gnome.desktop.background picture-uri file://# && 
-                gsettings set org.gnome.desktop.background draw-background true
-            '''
-            self.command = shell.replace("#",self.imgPath)
-            Logger.info("gnome command status:" + str(os.system(self.command)))
-            self.notify()
-            Logger.info("gnome setting finish")
 
         elif self.de == "mate":
             command = "gsettings set org.mate.background picture-filename #".replace("#",self.imgPath)
             Logger.info("mate command status:" + str(os.system(self.command)))
             self.notify()
             Logger.info("mate setting finish")
+            
+        elif self.de == "wm":
+            self.command = "feh --bg-fill "\
+                           +self.imgPath
+            Logger.info("feh command status:" + str(os.system(self.command)))
+            self.notify()
+            Logger.info("feh setting finish")
+
+        if self.de == "xfce":
+            self.command = "xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitor0/workspace0/last-image -s "\
+                           +self.imgPath
+
+            Logger.info("xfce command status:"+str(os.system(self.command)))
+            self.notify()
+            Logger.info("xfce setting finish")
 
         elif self.command:
             command = self.command.replace("{{}}",self.imgPath)
