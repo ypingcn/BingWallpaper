@@ -9,25 +9,25 @@ class Logger(object):
     @staticmethod
     def error(content,**kwargs):
         time = datetime.now().strftime("[%Y-%m-%d %H:%M:%S.%f]")
-        path = os.path.expanduser('~') + "/BingWallpaper/.oneclickbingwallpaper.log"
+        path = "%s/BingWallpaper/.oneclickbingwallpaper.log" % os.path.expanduser('~')
 
         if "path" in kwargs:
             path = kwargs["path"]
 
         with open(path,"a+") as file:
-            file.write(time + "#error :");
-            file.write(content+"\n")
+            file.write("%s#error :" % time )
+            file.write("%s\n" % content )
 
     @staticmethod
     def info(content,**kwargs):
         time = datetime.now().strftime("[%Y-%m-%d %H:%M:%S.%f]")
-        path = os.path.expanduser('~') + "/BingWallpaper/.oneclickbingwallpaper.log"
+        path = "%s/BingWallpaper/.oneclickbingwallpaper.log" % os.path.expanduser('~')
         if "path" in kwargs:
             path = kwargs["path"]
 
         with open(path,"a+") as file:
-            file.write(time + "#info :");
-            file.write(content+"\n")
+            file.write("%s#info :" % time )
+            file.write("%s\n" % content )
 
 class Downloader(object):
 
@@ -36,16 +36,16 @@ class Downloader(object):
         try:
             downloadReponse = requests.get(url)
         except:
-            Logger.error("exception throw when getting "+fileName)
+            Logger.error("exception throw when getting %s" % fileName )
 
         if downloadReponse.status_code != 200:
-            Logger.error("network error: "+str(downloadReponse.status_code))
+            Logger.error("network error: %s" % str(downloadReponse.status_code) )
 
         lastIndex = fileName.rfind("/")
         if lastIndex:
             if not os.path.exists(fileName[:lastIndex]):
                 os.mkdir(fileName[:lastIndex])
-                Logger.info(fileName[:lastIndex] + " not exist,repairing ...")
+                Logger.info("%s not exist,repairing ..." % fileName[:lastIndex] )
 
         with open(fileName,"wb") as file:
             file.write(downloadReponse.content)
@@ -55,9 +55,9 @@ class BingWallpaper(object):
     def __init__(self,de="",command=""):
         self.baseUrl = "https://cn.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1"
         self.json = requests.get(self.baseUrl).json()
-        self.imgUrl = "https://cn.bing.com"+self.json['images'][0]['url']
-        self.imgName = "BingWallpaper-" + time.strftime("%Y-%m-%d", time.localtime()) + ".jpg"
-        self.imgPath = os.path.expanduser('~') + "/BingWallpaper/" + self.imgName
+        self.imgUrl = "https://cn.bing.com%s" % self.json['images'][0]['url']
+        self.imgName = "BingWallpaper-%s.jpg" % ( time.strftime("%Y-%m-%d", time.localtime()) )
+        self.imgPath = "%s/BingWallpaper/%s" % ( os.path.expanduser('~'), self.imgName)
 
         self.de = de
         self.command = command
@@ -66,21 +66,16 @@ class BingWallpaper(object):
             Downloader.get(self.imgUrl,self.imgPath)
 
     def setWallpaper(self):
-        if self.de == "cinnamon":
-            self.command = "gsettings set org.cinnamon.desktop.background picture-uri  \"file:///"\
-                           +self.imgPath+"\""
+        Logger.info("setting begin")
+        Logger.info("de: %s, command: %s" % (self.de, self.command))
 
-            Logger.info("cinnamon command status:" + str(os.system(self.command)))
-            self.notify()
-            Logger.info("cinnamon setting finish")
+        if self.de == "cinnamon":
+            self.command = "gsettings set org.cinnamon.desktop.background picture-uri \"file:///%s\"" % self.imgPath
+            Logger.info("cinnamon command status:%s" % str(os.system(self.command)))
         
         elif self.de == "deepin":
-            self.command = "gsettings set com.deepin.wrap.gnome.desktop.background picture-uri \"file:///"\
-                           +self.imgPath+"\""
-
-            Logger.info("deepin command status:" + str(os.system(self.command)))
-            self.notify()
-            Logger.info("deepin setting finish")
+            self.command = "gsettings set com.deepin.wrap.gnome.desktop.background picture-uri \"file:///%s\"" % self.imgPath
+            Logger.info("deepin command status:%s" % str(os.system(self.command)))
         
         elif self.de == "gnome":
             shell = '''
@@ -89,9 +84,7 @@ class BingWallpaper(object):
                 gsettings set org.gnome.desktop.background draw-background true
             '''
             self.command = shell.replace("#",self.imgPath)
-            Logger.info("gnome command status:" + str(os.system(self.command)))
-            self.notify()
-            Logger.info("gnome setting finish")
+            Logger.info("gnome command status:%s" % str(os.system(self.command)))
         
         elif self.de == "kde":
             plasmashell = '''
@@ -102,44 +95,38 @@ class BingWallpaper(object):
                 d.writeConfig("Image","#");
             '''.replace("#",self.imgPath)
             self.command = "qdbus org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript \'#\'".replace("#",plasmashell)
-            Logger.info("kde command status:" + str(os.system(self.command)))
-            self.notify()
+            Logger.info("kde command status:%s" % str(os.system(self.command)))
             # if 'sh: 1: notify-send: not found' in kde , please install libnotify-bin
             # sudo apt install libnotify-bin
-            Logger.info("kde setting finish")
 
         elif self.de == "mate":
-            command = "gsettings set org.mate.background picture-filename #".replace("#",self.imgPath)
-            Logger.info("mate command status:" + str(os.system(self.command)))
-            self.notify()
-            Logger.info("mate setting finish")
+            self.command = "gsettings set org.mate.background picture-filename #".replace("#",self.imgPath)
+            Logger.info("mate command status:%s" % str(os.system(self.command)))
             
         elif self.de == "wm":
-            self.command = "feh --bg-fill "\
-                           +self.imgPath
-            Logger.info("feh command status:" + str(os.system(self.command)))
-            self.notify()
-            Logger.info("feh setting finish")
+            self.command = "feh --bg-fill %s" % self.imgPath
+            Logger.info("feh command status:%s" % str(os.system(self.command)))
 
-        if self.de == "xfce":
-            self.command = "xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitor0/workspace0/last-image -s "\
-                           +self.imgPath
-
-            Logger.info("xfce command status:"+str(os.system(self.command)))
-            self.notify()
-            Logger.info("xfce setting finish")
+        elif self.de == "xfce":
+            self.command = "xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitor0/workspace0/last-image -s %s" % self.imgPath
+            Logger.info("xfce command status:%s" % str(os.system(self.command)))
 
         elif self.command:
             command = self.command.replace("{{}}",self.imgPath)
-            Logger.info(self.command + " command status:" + str(os.system(command)))
+            Logger.info("%s command status: %s" % ( self.command, str(os.system(command)) ) )
 
         else:
-            Logger.info("not support desktop environment:"+str(self.de))
+            Logger.info("not support desktop environment:%s" % str(self.de))
+        
+        if self.de or self.command:
+            self.notify()
+        Logger.info("setting finish")
 
     def notify(self):
         content = self.json['images'][0]['copyright']
         lastIndex = content.rfind("(")
-        os.system("notify-send "+self.imgName+":"+content[:lastIndex])
+        shell = "notify-send %s:%s " % ( self.imgName, content[:lastIndex] )
+        os.system(shell)
     
     def detect(self):
         session = os.getenv("DESKTOP_SESSION")
