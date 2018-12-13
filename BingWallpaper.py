@@ -119,10 +119,15 @@ class BingWallpaper(object):
                 gsettings set org.gnome.desktop.background draw-background true
             '''
             self.command = shell.replace("#",self.imgPath)
-            Logger.info("kde command status:" + str(os.system(self.command)))
+            Logger.info("gnome command status:" + str(os.system(self.command)))
             self.notify()
             Logger.info("gnome setting finish")
 
+        elif self.de == "mate":
+            command = "gsettings set org.mate.background picture-filename #".replace("#",self.imgPath)
+            Logger.info("mate command status:" + str(os.system(self.command)))
+            self.notify()
+            Logger.info("mate setting finish")
 
         elif self.command:
             command = self.command.replace("{{}}",self.imgPath)

@@ -27,6 +27,7 @@ private:
     QAction * wmAction;
     QAction * gnomeAction;
     QAction * kdeAction;
+    QAction * mateAction;
     QAction * quitAction;
 
 private slots:

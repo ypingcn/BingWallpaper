@@ -36,13 +36,15 @@ OneClickBingWallpaper::OneClickBingWallpaper(QWidget *parent)
     connect(gnomeAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
     wmAction = new QAction(tr("WM"),this);
     connect(wmAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
+    mateAction = new QAction(tr("Mate"),this);
+    connect(mateAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
 
     autoAction = new QAction(tr("Auto"),this);
     connect(autoAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
 
     QList<QAction*> actionList;
     actionList << cinnamonAction << xfceAction << deepinAction \
-                << kdeAction << gnomeAction << wmAction;
+                << kdeAction << gnomeAction << wmAction << mateAction;
 
     quitAction = new QAction(tr("Quit"),this);
     connect(quitAction,&QAction::triggered,[](){
@@ -142,6 +144,11 @@ void OneClickBingWallpaper::updateWallpaper()
         else if (QObject::sender() == wmAction)
         {
             p.start("python3 "+OneClickBingWallpaperConfig::pyFilePath+" -d wm");
+            p.waitForFinished();
+        }
+        else if(QObject::sender() == mateAction)
+        {
+            p.start("python3 "+OneClickBingWallpaperConfig::pyFilePath+" -d mate");
             p.waitForFinished();
         }
     }
