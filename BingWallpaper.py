@@ -65,8 +65,6 @@ class BingWallpaper(object):
         if not os.path.exists(self.imgPath):
             Downloader.get(self.imgUrl,self.imgPath)
 
-        self.setWallpaper()
-
     def setWallpaper(self):
         if self.de == "xfce":
             self.command = "xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitor0/workspace0/last-image -s "\
@@ -140,13 +138,27 @@ class BingWallpaper(object):
     
     def detect(self):
         session = os.getenv("DESKTOP_SESSION")
-        #TODO
-
+        keywords = {
+            "cinnamon":"cinnamon",
+            "deepin":"deepin",
+            "gnome":"gnome",
+            "mate":"mate",
+            "plasma":"kde",
+            "xfce":"xfce"
+        }
+        for key in keywords:
+            if key in session:
+                self.de = keywords[key]
+                break
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
+    parser.add_argument("--auto",help="auto detect desktop environment(Beta)",action="store_true")
     parser.add_argument("-d",help="desktop environment: xfce etc")
     parser.add_argument("-c",help="command in your device to set desktop background,{{}} will be replaced with the true images path(not end with \)")
     args = parser.parse_args()
 
-    BingWallpaper(args.d,args.c)
+    bw = BingWallpaper(args.d,args.c)
+    if args.auto:
+        bw.detect()
+    bw.setWallpaper()
