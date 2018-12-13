@@ -55,15 +55,19 @@ class BingWallpaper(object):
     def __init__(self,de="",command=""):
         self.baseUrl = "https://cn.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1"
         self.json = requests.get(self.baseUrl).json()
-        self.imgUrl = "https://cn.bing.com%s" % self.json['images'][0]['url']
-        self.imgName = "BingWallpaper-%s.jpg" % ( time.strftime("%Y-%m-%d", time.localtime()) )
+        imgLocation = self.json['images'][0]['url']
+        imgUrl = "https://cn.bing.com%s" % imgLocation
+        lastIndex = imgLocation.rfind(".")
+        imgSuffix = imgLocation[lastIndex+1:]
+        self.imgName = "BingWallpaper-%s.%s" % ( time.strftime("%Y-%m-%d",time.localtime()), imgSuffix )
         self.imgPath = "%s/BingWallpaper/%s" % ( os.path.expanduser('~'), self.imgName)
+        self.notifyIconPath = "/usr/share/icons/hicolor/16x16/apps/OneClickBingWallpaper.png"
 
         self.de = de
         self.command = command
 
         if not os.path.exists(self.imgPath):
-            Downloader.get(self.imgUrl,self.imgPath)
+            Downloader.get(imgUrl,self.imgPath)
 
     def setWallpaper(self):
         Logger.info("setting begin")
@@ -125,7 +129,10 @@ class BingWallpaper(object):
     def notify(self):
         content = self.json['images'][0]['copyright']
         lastIndex = content.rfind("(")
-        shell = "notify-send %s:%s " % ( self.imgName, content[:lastIndex] )
+        if os.path.exists(self.notifyIconPath):
+            options = "--icon=%s" % self.notifyIconPath
+        shell = "notify-send %s:%s %s" % ( time.strftime("%Y-%m-%d",time.localtime()), content[:lastIndex], options)
+        print(shell)
         os.system(shell)
     
     def detect(self):
