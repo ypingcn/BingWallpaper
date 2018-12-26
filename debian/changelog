@@ -1,5 +1,10 @@
-oneclickbingwallpaper (0.1) unstable; urgency=low
+oneclickbingwallpaper (0.4) unstable; urgency=low
 
   * OneClickBingWallpaper
 
- -- ypingcn <1344632698@qq.com>  Thu, 7 Dec 2017 22:20:00 +0800
+  Auto detection in different desktop environment(Testing)
+  Fold menu
+  Mate support
+  More size for icon
+
+ -- ypingcn <1344632698@qq.com>  Wed, 26 Dec 2018 23:15:00 +0800
