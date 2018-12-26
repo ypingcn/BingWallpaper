@@ -61,7 +61,7 @@ class BingWallpaper(object):
         imgSuffix = imgLocation[lastIndex+1:]
         self.imgName = "BingWallpaper-%s.%s" % ( time.strftime("%Y-%m-%d",time.localtime()), imgSuffix )
         self.imgPath = "%s/BingWallpaper/%s" % ( os.path.expanduser('~'), self.imgName)
-        self.notifyIconPath = "/usr/share/icons/hicolor/16x16/apps/OneClickBingWallpaper.png"
+        self.notifyIconPath = "/usr/share/icons/hicolor/64x64/apps/OneClickBingWallpaper.png"
 
         self.de = de
         self.command = command
