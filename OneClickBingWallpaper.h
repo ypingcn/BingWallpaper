@@ -19,7 +19,8 @@ public:
     ~OneClickBingWallpaper();
 private:
     QSystemTrayIcon * trayIcon;
-    QMenu * trayMenu, * moreMenu;
+    QMenu * trayMenu, * moreMenu, * langMenu;
+
     QAction * autoAction;
     QAction * cinnamonAction;
     QAction * deepinAction;
@@ -28,11 +29,16 @@ private:
     QAction * mateAction;
     QAction * wmAction;
     QAction * xfceAction;
+
+    QAction * zhAction;
+    QAction * enAction;
+
     QAction * quitAction;
 
 private slots:
     void trayIconActivated(QSystemTrayIcon::ActivationReason);
     void updateWallpaper();
+    void updateLanguage();
 };
 
 #endif // ONECLICKGO_H

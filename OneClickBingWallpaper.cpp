@@ -1,6 +1,7 @@
 #include "OneClickBingWallpaper.h"
 #include "OneClickBingWallpaperConfig.h"
 
+
 #include <DApplication>
 
 DWIDGET_USE_NAMESPACE
@@ -11,6 +12,8 @@ DWIDGET_USE_NAMESPACE
 #include <QMessageBox>
 #include <QCryptographicHash>
 #include <QDebug>
+#include <QSettings>
+#include <QTranslator>
 
 OneClickBingWallpaper::OneClickBingWallpaper(QWidget *parent)
     : QWidget(parent)
@@ -23,6 +26,7 @@ OneClickBingWallpaper::OneClickBingWallpaper(QWidget *parent)
 
     trayMenu = new QMenu(this);
     moreMenu = new QMenu(tr("Specific DE"),this);
+    langMenu = new QMenu(tr("Language"),this);
 
     cinnamonAction = new QAction(tr("Cinnamon"),this);
     connect(cinnamonAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
@@ -39,6 +43,11 @@ OneClickBingWallpaper::OneClickBingWallpaper(QWidget *parent)
     xfceAction = new QAction(tr("Xfce"),this);
     connect(xfceAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
 
+    zhAction = new QAction(tr("中文"),this);
+    connect(zhAction,SIGNAL(triggered()),this,SLOT(updateLanguage()));
+    enAction = new QAction(tr("English"),this);
+    connect(enAction,SIGNAL(triggered()),this,SLOT(updateLanguage()));
+
     autoAction = new QAction(tr("Auto Setting"),this);
     connect(autoAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
 
@@ -53,8 +62,14 @@ OneClickBingWallpaper::OneClickBingWallpaper(QWidget *parent)
     });
     
     moreMenu->addActions(actionList);
+
+    actionList.clear();
+    actionList << zhAction << enAction ;
+    langMenu->addActions(actionList);
+
     trayMenu->addAction(autoAction);
     trayMenu->addMenu(moreMenu);
+    trayMenu->addMenu(langMenu);
     trayMenu->addSeparator();
     trayMenu->addAction(quitAction);
     
@@ -68,6 +83,34 @@ OneClickBingWallpaper::~OneClickBingWallpaper()
 
 void OneClickBingWallpaper::trayIconActivated(QSystemTrayIcon::ActivationReason reason)
 {
+    QSettings settings("ypingcn","oneclickwallpaper");
+
+    QLocale locale = QLocale::system();
+    QString localeName = QLocale::countryToString(locale.country());
+    QString localeShortName;
+
+    if(localeName == QString("China"))
+    {
+        localeShortName = "zh-CN";
+    }
+    else
+    {
+        localeShortName = "en-US";
+    }
+    if(!settings.contains("lang"))
+        settings.setValue("lang",localeShortName);
+
+    QTranslator translator;
+    const QString i18nFilePathPrefix = OneClickBingWallpaperConfig::i18nFilePathPrefix;
+    const QString i18nFilePath = i18nFilePathPrefix+settings.value("lang").toString()+".qm";
+    if(QFile::exists(i18nFilePath))
+    {
+        translator.load(i18nFilePath);
+    }
+    DApplication * app;
+    app->installTranslator(&translator);
+
+
     switch(reason)
     {
         case QSystemTrayIcon::Context:
@@ -152,4 +195,19 @@ void OneClickBingWallpaper::updateWallpaper()
             p.waitForFinished();
         }
     }
+}
+
+void OneClickBingWallpaper::updateLanguage()
+{
+    QSettings settings("ypingcn","oneclickwallpaper");
+    qDebug() << settings.value("lang") << endl;
+    if(QObject::sender() == zhAction)
+    {
+        settings.setValue("lang","zh-CN");
+    }
+    else if(QObject::sender() == enAction)
+    {
+        settings.setValue("lang","en-US");
+    }
+    qDebug() << settings.value("lang") << endl;
 }
