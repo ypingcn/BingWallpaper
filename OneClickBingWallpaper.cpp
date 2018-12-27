@@ -22,7 +22,7 @@ OneClickBingWallpaper::OneClickBingWallpaper(QWidget *parent)
     connect(trayIcon,SIGNAL(activated(QSystemTrayIcon::ActivationReason)),this,SLOT(trayIconActivated(QSystemTrayIcon::ActivationReason)));
 
     trayMenu = new QMenu(this);
-    moreMenu = new QMenu(tr("More"),this);
+    moreMenu = new QMenu(tr("Specific DE"),this);
 
     cinnamonAction = new QAction(tr("Cinnamon"),this);
     connect(cinnamonAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
@@ -39,7 +39,7 @@ OneClickBingWallpaper::OneClickBingWallpaper(QWidget *parent)
     xfceAction = new QAction(tr("Xfce"),this);
     connect(xfceAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
 
-    autoAction = new QAction(tr("Auto"),this);
+    autoAction = new QAction(tr("Auto Setting"),this);
     connect(autoAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
 
     QList<QAction*> actionList;
