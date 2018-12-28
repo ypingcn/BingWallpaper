@@ -1,10 +1,8 @@
-oneclickbingwallpaper (0.4) unstable; urgency=low
+oneclickbingwallpaper (0.5) unstable; urgency=low
 
   * OneClickBingWallpaper
 
-  Auto detection in different desktop environment(Testing)
-  Fold menu
-  Mate support
-  More size for icon
+  Multi language and switch support
+  More specific description in menu
 
- -- ypingcn <1344632698@qq.com>  Wed, 26 Dec 2018 23:15:00 +0800
+ -- ypingcn <1344632698@qq.com>  Fri, 28 Dec 2018 14:20:00 +0800
