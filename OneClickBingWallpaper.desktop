@@ -2,8 +2,8 @@
 Version=0.1
 Type=Application
 Exec=/usr/bin/OneClickBingWallpaper/OneClickBingWallpaper
-Name=BingWallpaper
-Name[zh_CN]=必应壁纸一键设置
+Name=SetBingWallpaper
+Name[zh_CN]=设置必应壁纸
 Comment=click and set newest Bing wallpaper
 Comment[zh_CN]=点击设置最新的必应壁纸
 Icon=OneClickBingWallpaper
