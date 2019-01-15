@@ -51,6 +51,8 @@ OneClickBingWallpaper::OneClickBingWallpaper(QWidget *parent)
     enAction = new QAction(tr("English"),this);
     connect(enAction,SIGNAL(triggered()),this,SLOT(updateLanguage()));
 
+    settingAction = new QAction(tr("Setting"),this);
+    connect(settingAction,SIGNAL(triggered()),this,SLOT(showSettingWidget()));
     aboutAction = new QAction(tr("About"),this);
     connect(aboutAction,SIGNAL(triggered()),this,SLOT(showAboutWidget()));
 
@@ -76,6 +78,7 @@ OneClickBingWallpaper::OneClickBingWallpaper(QWidget *parent)
     trayMenu->addAction(autoAction);
     trayMenu->addMenu(moreMenu);
     trayMenu->addMenu(langMenu);
+    trayMenu->addAction(settingAction);
     trayMenu->addAction(aboutAction);
     trayMenu->addSeparator();
     trayMenu->addAction(quitAction);
@@ -204,6 +207,10 @@ void OneClickBingWallpaper::updateLanguage()
         settings.setValue("lang","en-US");
     }
     qDebug() << settings.value("lang") << endl;
+}
+
+void OneClickBingWallpaper::showSettingWidget()
+{
 }
 
 void OneClickBingWallpaper::showAboutWidget()

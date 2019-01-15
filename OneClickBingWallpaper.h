@@ -33,6 +33,7 @@ private:
     QAction * zhAction;
     QAction * enAction;
 
+    QAction * settingAction;
     QAction * aboutAction;
 
     QAction * quitAction;
@@ -41,6 +42,8 @@ private slots:
     void trayIconActivated(QSystemTrayIcon::ActivationReason);
     void updateWallpaper();
     void updateLanguage();
+
+    void showSettingWidget();
     void showAboutWidget();
 };
 
