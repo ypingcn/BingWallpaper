@@ -14,6 +14,9 @@ DWIDGET_USE_NAMESPACE
 #include <QDebug>
 #include <QSettings>
 #include <QTranslator>
+#include <QDesktopWidget>
+
+#include <DAboutDialog>
 
 OneClickBingWallpaper::OneClickBingWallpaper(QWidget *parent)
     : QWidget(parent)
@@ -48,6 +51,9 @@ OneClickBingWallpaper::OneClickBingWallpaper(QWidget *parent)
     enAction = new QAction(tr("English"),this);
     connect(enAction,SIGNAL(triggered()),this,SLOT(updateLanguage()));
 
+    aboutAction = new QAction(tr("About"),this);
+    connect(aboutAction,SIGNAL(triggered()),this,SLOT(showAboutWidget()));
+
     autoAction = new QAction(tr("Auto Setting"),this);
     connect(autoAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
 
@@ -70,6 +76,7 @@ OneClickBingWallpaper::OneClickBingWallpaper(QWidget *parent)
     trayMenu->addAction(autoAction);
     trayMenu->addMenu(moreMenu);
     trayMenu->addMenu(langMenu);
+    trayMenu->addAction(aboutAction);
     trayMenu->addSeparator();
     trayMenu->addAction(quitAction);
     
@@ -197,4 +204,26 @@ void OneClickBingWallpaper::updateLanguage()
         settings.setValue("lang","en-US");
     }
     qDebug() << settings.value("lang") << endl;
+}
+
+void OneClickBingWallpaper::showAboutWidget()
+{
+    DAboutDialog * dialog = new DAboutDialog(this);
+
+    QIcon icon;
+    icon.addFile(":/OneClickBingWallpaper.png",QSize(96,96));
+    QPixmap emptyPixmap;
+    DApplication * app;
+
+    dialog->setAttribute(Qt::WA_DeleteOnClose) ;
+    dialog->setProductIcon(icon);
+    dialog->setProductName(app->applicationDisplayName());
+    dialog->setVersion("");
+    dialog->setAcknowledgementLink("https://github.com/ypingcn/BingWallpaper/wiki/Acknowledgement");
+    dialog->setWebsiteName("https://github.com/ypingcn/BingWallpaper");
+    dialog->setWebsiteLink("https://github.com/ypingcn/BingWallpaper");
+    dialog->setCompanyLogo(emptyPixmap);
+    dialog->setDescription(tr("A tool to set lastest Bingwallpaper in Linux desktop."));
+    dialog->show();
+    dialog->move(( DApplication::desktop()->width()-dialog->width() )/2,( DApplication::desktop()->height()-dialog->height() )/2 );
 }

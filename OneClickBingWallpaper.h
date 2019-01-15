@@ -33,12 +33,15 @@ private:
     QAction * zhAction;
     QAction * enAction;
 
+    QAction * aboutAction;
+
     QAction * quitAction;
 
 private slots:
     void trayIconActivated(QSystemTrayIcon::ActivationReason);
     void updateWallpaper();
     void updateLanguage();
+    void showAboutWidget();
 };
 
 #endif // ONECLICKBINGWALLPAPER_H
