@@ -7,34 +7,19 @@ DWIDGET_USE_NAMESPACE
 #include <QSettings>
 #include <QTranslator>
 
+#include "OneClickBingWallpaperConfig.h"
+
 int main(int argc, char *argv[])
 {
     DApplication::loadDXcbPlugin();
 
     QSettings settings("ypingcn","oneclickwallpaper");
+
+    OneClickBingWallpaperConfig::updateLanguagesSetting(settings);
     
-    // change this part in the future
-    ////////////////////////////////////////////////////////////
-    QLocale locale = QLocale::system();
-    QString localeName = QLocale::countryToString(locale.country());
-    QString localeShortName;
-
-    if(localeName == QString("China"))
-    {
-        localeShortName = "zh-CN";
-    }
-    else
-    {
-        localeShortName = "en-US";
-    }
-    if(!settings.contains("lang"))
-        settings.setValue("lang",localeShortName);
-
-    ////////////////////////////////////////////////////////////
 
     QTranslator translator;
-    const QString i18nFilePathPrefix = "/usr/bin/OneClickBingWallpaper/i18n/";
-    const QString i18nFilePath = i18nFilePathPrefix+settings.value("lang").toString()+".qm";
+    const QString i18nFilePath = OneClickBingWallpaperConfig::geti18nFilePath(settings);
     if(QFile::exists(i18nFilePath))
     {
         translator.load(i18nFilePath);

@@ -85,28 +85,15 @@ void OneClickBingWallpaper::trayIconActivated(QSystemTrayIcon::ActivationReason 
 {
     QSettings settings("ypingcn","oneclickwallpaper");
 
-    QLocale locale = QLocale::system();
-    QString localeName = QLocale::countryToString(locale.country());
-    QString localeShortName;
-
-    if(localeName == QString("China"))
-    {
-        localeShortName = "zh-CN";
-    }
-    else
-    {
-        localeShortName = "en-US";
-    }
-    if(!settings.contains("lang"))
-        settings.setValue("lang",localeShortName);
+    OneClickBingWallpaperConfig::updateLanguagesSetting(settings);
 
     QTranslator translator;
-    const QString i18nFilePathPrefix = OneClickBingWallpaperConfig::i18nFilePathPrefix;
-    const QString i18nFilePath = i18nFilePathPrefix+settings.value("lang").toString()+".qm";
+    const QString i18nFilePath = OneClickBingWallpaperConfig::geti18nFilePath(settings);
     if(QFile::exists(i18nFilePath))
     {
         translator.load(i18nFilePath);
     }
+
     DApplication * app;
     app->installTranslator(&translator);
 

@@ -1,5 +1,5 @@
-#ifndef ONECLICKGO_H
-#define ONECLICKGO_H
+#ifndef ONECLICKBINGWALLPAPER_H
+#define ONECLICKBINGWALLPAPER_H
 
 #include <QWidget>
 #include <QSystemTrayIcon>
@@ -41,4 +41,4 @@ private slots:
     void updateLanguage();
 };
 
-#endif // ONECLICKGO_H
+#endif // ONECLICKBINGWALLPAPER_H
