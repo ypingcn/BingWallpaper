@@ -32,6 +32,18 @@ OneClickBingWallpaper::OneClickBingWallpaper(QWidget *parent)
     dsettings = DSettings::fromJsonFile(":/config/settings.json");
     dsettings->setBackend(backend);
 
+    timer = new QTimer(this);
+    connect(timer, &QTimer::timeout, [this]() {
+        updateWallpaper("--auto");
+    });
+    auto enable = dsettings->option("base.autoupdate.enable");
+    auto duration = dsettings->option("base.autoupdate.duration");
+    if(enable->value().toBool() && duration->value().toInt() != -1)
+    {
+        timer->setInterval(duration->value().toInt()*60*1000);
+        timer->start();
+    }
+
     initAction();
     initMenu();
     initConnect();

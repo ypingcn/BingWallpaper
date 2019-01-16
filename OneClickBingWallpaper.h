@@ -7,6 +7,7 @@
 #include <QMessageBox>
 #include <QAction>
 #include <QMenu>
+#include <QTimer>
 #include <qsettingbackend.h>
 
 #include <DSettingsDialog>
@@ -69,6 +70,8 @@ private:
     QString configPath;
     Dtk::Core::QSettingBackend * backend;
     DSettings * dsettings;
+
+    QTimer * timer;
 
     void initAction();
     void initMenu();
