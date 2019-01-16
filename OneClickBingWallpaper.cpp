@@ -44,19 +44,29 @@ OneClickBingWallpaper::~OneClickBingWallpaper()
 }
 
 void OneClickBingWallpaper::initAction()
-{
-    autoAction = new QAction(tr("Auto Setting"),this);
-    
-    cinnamonAction = new QAction(tr("Cinnamon"),this);
-    deepinAction = new QAction(tr("Deepin"),this);
-    gnomeAction = new QAction(tr("Gnome"),this);
-    kdeAction = new QAction(tr("KDE"),this);
-    mateAction = new QAction(tr("Mate"),this);
-    wmAction = new QAction(tr("WM"),this);
-    xfceAction = new QAction(tr("Xfce"),this);
+{        
+    for(int i = 1 ; i < vDesktopEnvironments.size() ; i++)
+    {
+        DesktopEnvironmentType item = vDesktopEnvironments[i];
+        QAction * action = new QAction(item.name,this);
+        connect(action,&QAction::triggered,[this,item]()
+        {
+            updateWallpaper(item.argument);
+        });
+        vDEActions.push_back( action );
+    }
+    for(int i = 0 ; i < vLanguages.size(); i++)
+    {
+        LanguageType item = vLanguages[i];
+        QAction * action = new QAction(item.name,this);
+        connect(action, &QAction::triggered, [this,item]()
+        {
+            updateLanguage(item.value);
+        });
+        vLangActions.push_back(action);
+    }
 
-    zhAction = new QAction(tr("中文"),this);
-    enAction = new QAction(tr("English"),this);
+    autoAction = new QAction(tr("Auto Setting"),this);
 
     settingAction = new QAction(tr("Setting"),this);
 
@@ -72,12 +82,17 @@ void OneClickBingWallpaper::initMenu()
     langMenu = new QMenu(tr("Language"),this);
 
     QList<QAction*> actionList;
-    actionList << cinnamonAction << deepinAction << gnomeAction \
-                << kdeAction << mateAction << wmAction << xfceAction;
+    for(auto item : vDEActions)
+    {
+        actionList << item ;
+    }
     moreMenu->addActions(actionList);
 
     actionList.clear();
-    actionList << zhAction << enAction ;
+    for(auto item : vLangActions)
+    {
+        actionList << item ;
+    }
     langMenu->addActions(actionList);
 
     trayMenu->addAction(autoAction);
@@ -98,19 +113,6 @@ void OneClickBingWallpaper::initMenu()
 void OneClickBingWallpaper::initConnect()
 {
     connect(trayIcon,SIGNAL(activated(QSystemTrayIcon::ActivationReason)),this,SLOT(trayIconActivated(QSystemTrayIcon::ActivationReason)));
-
-    connect(autoAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
-
-    connect(cinnamonAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
-    connect(deepinAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
-    connect(gnomeAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
-    connect(kdeAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
-    connect(mateAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
-    connect(wmAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
-    connect(xfceAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
-
-    connect(zhAction,SIGNAL(triggered()),this,SLOT(updateLanguage()));
-    connect(enAction,SIGNAL(triggered()),this,SLOT(updateLanguage()));
 
     connect(settingAction,SIGNAL(triggered()),this,SLOT(showSettingWidget()));
 
@@ -158,7 +160,7 @@ void OneClickBingWallpaper::trayIconActivated(QSystemTrayIcon::ActivationReason 
     }
 }
 
-void OneClickBingWallpaper::updateWallpaper()
+void OneClickBingWallpaper::updateWallpaper(QString argument)
 {
     bool pyFileVaild = true;
 
@@ -191,69 +193,25 @@ void OneClickBingWallpaper::updateWallpaper()
     QProcess p(0);
     if (pyFileVaild)
     {
-        if (QObject::sender() == autoAction)
-        {
-            p.start("python3 "+OneClickBingWallpaperConfig::pyFilePath+" --auto");
-            p.waitForFinished();
-        }
-        else if (QObject::sender() == cinnamonAction)
-        {
-            p.start("python3 "+OneClickBingWallpaperConfig::pyFilePath+" -d cinnamon");
-            p.waitForFinished();
-        }
-        else if (QObject::sender() == xfceAction)
-        {
-            p.start("python3 "+OneClickBingWallpaperConfig::pyFilePath+" -d xfce");
-            p.waitForFinished();
-        }
-        else if (QObject::sender() == deepinAction)
-        {
-            p.start("python3 "+OneClickBingWallpaperConfig::pyFilePath+" -d deepin");
-            p.waitForFinished();
-        }
-        else if (QObject::sender() == kdeAction)
-        {
-            p.start("python3 "+OneClickBingWallpaperConfig::pyFilePath+" -d kde");
-            p.waitForFinished();
-        }
-        else if (QObject::sender() == gnomeAction)
-        {
-            p.start("python3 "+OneClickBingWallpaperConfig::pyFilePath+" -d gnome");
-            p.waitForFinished();
-        }
-        else if (QObject::sender() == wmAction)
-        {
-            p.start("python3 "+OneClickBingWallpaperConfig::pyFilePath+" -d wm");
-            p.waitForFinished();
-        }
-        else if(QObject::sender() == mateAction)
-        {
-            p.start("python3 "+OneClickBingWallpaperConfig::pyFilePath+" -d mate");
-            p.waitForFinished();
-        }
+        QString command = QString("python3 %1 %2").arg(OneClickBingWallpaperConfig::pyFilePath,argument);
+        p.start(command);
+        p.waitForFinished();
     }
 }
 
-void OneClickBingWallpaper::updateLanguage()
+void OneClickBingWallpaper::updateLanguage(QString value)
 {
     DApplication * app;
     QSettings settings(app->organizationName(),app->applicationName());
 
     qDebug() << settings.value("lang") << endl;
-    if(QObject::sender() == zhAction)
-    {
-        settings.setValue("lang","zh-CN");
-    }
-    else if(QObject::sender() == enAction)
-    {
-        settings.setValue("lang","en-US");
-    }
+    settings.setValue("lang",value);
     qDebug() << settings.value("lang") << endl;
 }
 
 void OneClickBingWallpaper::showSettingWidget()
 {
-    DSettingsDialog * dialog = new DSettingsDialog;
+    DSettingsDialog * dialog = new DSettingsDialog(this);
     dialog->updateSettings(dsettings);
     dialog->move(( DApplication::desktop()->width()-dialog->width() )/2,( DApplication::desktop()->height()-dialog->height() )/2 );
     dialog->show();
@@ -261,7 +219,7 @@ void OneClickBingWallpaper::showSettingWidget()
 
 void OneClickBingWallpaper::showAboutWidget()
 {
-    DAboutDialog * dialog = new DAboutDialog;
+    DAboutDialog * dialog = new DAboutDialog(this);
 
     QIcon icon;
     icon.addFile(":/OneClickBingWallpaper.png",QSize(96,96));

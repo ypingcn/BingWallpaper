@@ -21,6 +21,30 @@ DCORE_USE_NAMESPACE
 
 #define PYFILE_MD5_CHECK
 
+struct DesktopEnvironmentType
+{
+public:
+    QString name;
+    QString argument;
+};
+
+struct LanguageType
+{
+public:
+    QString name;
+    QString value;
+};
+
+static QVector<DesktopEnvironmentType> vDesktopEnvironments = {
+    {QObject::tr("Auto Setting"),"--auto"}, {QObject::tr("Cinnamon"),"-d cinnamon"}, {QObject::tr("Deepin"),"-d deepin"},
+    {QObject::tr("Gnome"),"-d gnome"},{QObject::tr("KDE"),"-d kde"},{QObject::tr("Mate"),"-d mate"},
+    {QObject::tr("WM"),"-d wm"},{QObject::tr("Xfce"),"-d xfce"}
+};
+
+static QVector<LanguageType> vLanguages = {
+    {QObject::tr("简体中文"),"zh-CN"}, {QObject::tr("English"),"en-US"}
+};
+
 class OneClickBingWallpaper : public QWidget
 {
     Q_OBJECT
@@ -33,16 +57,9 @@ private:
     QMenu * trayMenu, * moreMenu, * langMenu;
 
     QAction * autoAction;
-    QAction * cinnamonAction;
-    QAction * deepinAction;
-    QAction * gnomeAction;
-    QAction * kdeAction;
-    QAction * mateAction;
-    QAction * wmAction;
-    QAction * xfceAction;
+    QVector<QAction*> vDEActions;
 
-    QAction * zhAction;
-    QAction * enAction;
+    QVector<QAction*> vLangActions;
 
     QAction * settingAction;
     QAction * aboutAction;
@@ -60,8 +77,8 @@ private:
 
 private slots:
     void trayIconActivated(QSystemTrayIcon::ActivationReason);
-    void updateWallpaper();
-    void updateLanguage();
+    void updateWallpaper(QString argument);
+    void updateLanguage(QString value);
 
     void showSettingWidget();
     void showAboutWidget();
