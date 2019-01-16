@@ -1,0 +1,36 @@
+{
+    "groups": [
+        {
+            "key": "base",
+            "name": "Basic",
+            "groups": [
+                {
+                    "key": "autoupdate",
+                    "name": "Auto Update",
+                    "options": [
+                        {
+                            "key": "startup-enable",
+                            "name": "",
+                            "type": "checkbox",
+                            "text": "Autoupdate Bingwallpaper when startup",
+                            "default": "false"
+                        },
+                        {
+                            "key": "enable",
+                            "name": "Enable",
+                            "type": "checkbox",
+                            "text": "Autoupdate Bingwallpaper for special duration",
+                            "default": "false"
+                        },
+                        {
+                            "key": "duration",
+                            "name": "Duration",
+                            "type": "combobox",
+                            "default": "-1"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

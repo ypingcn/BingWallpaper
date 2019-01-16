@@ -7,6 +7,17 @@
 #include <QMessageBox>
 #include <QAction>
 #include <QMenu>
+#include <qsettingbackend.h>
+
+#include <DSettingsDialog>
+#include <DSettings>
+#include <DSettingsOption>
+
+DCORE_BEGIN_NAMESPACE
+class DSettings;
+DCORE_END_NAMESPACE
+
+DCORE_USE_NAMESPACE
 
 #define PYFILE_MD5_CHECK
 
@@ -37,6 +48,10 @@ private:
     QAction * aboutAction;
 
     QAction * quitAction;
+
+    QString configPath;
+    Dtk::Core::QSettingBackend * backend;
+    DSettings * dsettings;
 
 private slots:
     void trayIconActivated(QSystemTrayIcon::ActivationReason);

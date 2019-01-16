@@ -12,8 +12,12 @@ DWIDGET_USE_NAMESPACE
 int main(int argc, char *argv[])
 {
     DApplication::loadDXcbPlugin();
+    DApplication a(argc, argv);
 
-    QSettings settings("ypingcn","oneclickwallpaper");
+    a.setOrganizationName("ypingcn");
+    a.setApplicationName("oneclickwallpaper");
+
+    QSettings settings(a.organizationName(),a.applicationName());
 
     OneClickBingWallpaperConfig::updateLanguagesSetting(settings);
     
@@ -25,7 +29,6 @@ int main(int argc, char *argv[])
         translator.load(i18nFilePath);
     }
 
-    DApplication a(argc, argv);
     a.setQuitOnLastWindowClosed(false);
     a.installTranslator(&translator);
 

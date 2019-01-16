@@ -15,6 +15,7 @@ DWIDGET_USE_NAMESPACE
 #include <QSettings>
 #include <QTranslator>
 #include <QDesktopWidget>
+#include <QStandardPaths>
 
 #include <DAboutDialog>
 
@@ -84,6 +85,23 @@ OneClickBingWallpaper::OneClickBingWallpaper(QWidget *parent)
     trayMenu->addAction(quitAction);
     
     trayIcon->setContextMenu(trayMenu);
+
+    DApplication * app;
+    configPath = QString("%1/%2/%3.conf").arg(
+            QStandardPaths::standardLocations(QStandardPaths::ConfigLocation).first(), 
+            app->organizationName(), 
+            app->applicationName()
+        );
+    backend = new QSettingBackend(configPath);
+    dsettings = DSettings::fromJsonFile(":/config/settings.json");
+    dsettings->setBackend(backend);
+
+    auto duration = dsettings->option("base.autoupdate.duration");
+    QMap<QString, QVariant> durationOptions;
+    durationOptions.insert("keys", QStringList() << "-1" << "5" << "30");
+    durationOptions.insert("values", QStringList() << tr("Disable") << tr("Every 5 minute") << tr("Every 30 minute"));
+    duration->setData("items",durationOptions);
+
 }
 
 OneClickBingWallpaper::~OneClickBingWallpaper()
@@ -93,7 +111,8 @@ OneClickBingWallpaper::~OneClickBingWallpaper()
 
 void OneClickBingWallpaper::trayIconActivated(QSystemTrayIcon::ActivationReason reason)
 {
-    QSettings settings("ypingcn","oneclickwallpaper");
+    DApplication * app;
+    QSettings settings(app->organizationName(),app->applicationName());
 
     OneClickBingWallpaperConfig::updateLanguagesSetting(settings);
 
@@ -104,7 +123,6 @@ void OneClickBingWallpaper::trayIconActivated(QSystemTrayIcon::ActivationReason 
         translator.load(i18nFilePath);
     }
 
-    DApplication * app;
     app->installTranslator(&translator);
 
 
@@ -196,7 +214,9 @@ void OneClickBingWallpaper::updateWallpaper()
 
 void OneClickBingWallpaper::updateLanguage()
 {
-    QSettings settings("ypingcn","oneclickwallpaper");
+    DApplication * app;
+    QSettings settings(app->organizationName(),app->applicationName());
+
     qDebug() << settings.value("lang") << endl;
     if(QObject::sender() == zhAction)
     {
@@ -211,11 +231,15 @@ void OneClickBingWallpaper::updateLanguage()
 
 void OneClickBingWallpaper::showSettingWidget()
 {
+    DSettingsDialog * dialog = new DSettingsDialog;
+    dialog->updateSettings(dsettings);
+    dialog->move(( DApplication::desktop()->width()-dialog->width() )/2,( DApplication::desktop()->height()-dialog->height() )/2 );
+    dialog->show();
 }
 
 void OneClickBingWallpaper::showAboutWidget()
 {
-    DAboutDialog * dialog = new DAboutDialog(this);
+    DAboutDialog * dialog = new DAboutDialog;
 
     QIcon icon;
     icon.addFile(":/OneClickBingWallpaper.png",QSize(96,96));

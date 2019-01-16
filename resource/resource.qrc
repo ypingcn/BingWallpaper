@@ -12,4 +12,7 @@
         <file>icons/96x96/OneClickBingWallpaper.png</file>
         <file>OneClickBingWallpaper.png</file>
     </qresource>
+    <qresource prefix="/config">
+        <file>settings.json</file>
+    </qresource>
 </RCC>
