@@ -74,6 +74,7 @@ private:
     void initMenu();
     void initConnect();
     void initSettingOptions();
+    void initOther();
 
 private slots:
     void trayIconActivated(QSystemTrayIcon::ActivationReason);

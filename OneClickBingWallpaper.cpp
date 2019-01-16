@@ -36,6 +36,7 @@ OneClickBingWallpaper::OneClickBingWallpaper(QWidget *parent)
     initMenu();
     initConnect();
     initSettingOptions();
+    initOther();
 }
 
 OneClickBingWallpaper::~OneClickBingWallpaper()
@@ -133,6 +134,15 @@ void OneClickBingWallpaper::initSettingOptions()
     duration->setData("items",durationOptions);
 }
 
+void OneClickBingWallpaper::initOther()
+{
+    auto startupEnable = dsettings->option("base.autoupdate.startup-enable");
+    if( startupEnable->value().toBool() )
+    {
+        updateWallpaper("--auto");
+    }
+}
+
 void OneClickBingWallpaper::trayIconActivated(QSystemTrayIcon::ActivationReason reason)
 {
     DApplication * app;
@@ -190,12 +200,11 @@ void OneClickBingWallpaper::updateWallpaper(QString argument)
 #endif // PYFILE_MD5_CHECK
     }
 
-    QProcess p(0);
     if (pyFileVaild)
     {
+        QProcess * process = new QProcess;
         QString command = QString("python3 %1 %2").arg(OneClickBingWallpaperConfig::pyFilePath,argument);
-        p.start(command);
-        p.waitForFinished();
+        process->start(command);
     }
 }
 
