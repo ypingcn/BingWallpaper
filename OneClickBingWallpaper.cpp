@@ -127,6 +127,10 @@ void OneClickBingWallpaper::initConnect()
 {
     connect(trayIcon,SIGNAL(activated(QSystemTrayIcon::ActivationReason)),this,SLOT(trayIconActivated(QSystemTrayIcon::ActivationReason)));
 
+    connect(autoAction, &QAction::triggered, [this](){
+        updateWallpaper("--auto");
+    });
+
     connect(settingAction,SIGNAL(triggered()),this,SLOT(showSettingWidget()));
 
     connect(aboutAction,SIGNAL(triggered()),this,SLOT(showAboutWidget()));
