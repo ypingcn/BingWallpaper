@@ -22,54 +22,58 @@ DWIDGET_USE_NAMESPACE
 OneClickBingWallpaper::OneClickBingWallpaper(QWidget *parent)
     : QWidget(parent)
 {
-    QIcon icon = QIcon(":/OneClickBingWallpaper.png");
-    trayIcon = new QSystemTrayIcon(this);
-    trayIcon->setIcon(icon);
-    trayIcon->show();
-    connect(trayIcon,SIGNAL(activated(QSystemTrayIcon::ActivationReason)),this,SLOT(trayIconActivated(QSystemTrayIcon::ActivationReason)));
+    DApplication * app;
+    configPath = QString("%1/%2/%3.conf").arg(
+            QStandardPaths::standardLocations(QStandardPaths::ConfigLocation).first(), 
+            app->organizationName(), 
+            app->applicationName()
+        );
+    backend = new QSettingBackend(configPath);
+    dsettings = DSettings::fromJsonFile(":/config/settings.json");
+    dsettings->setBackend(backend);
 
+    initAction();
+    initMenu();
+    initConnect();
+    initSettingOptions();
+}
+
+OneClickBingWallpaper::~OneClickBingWallpaper()
+{
+
+}
+
+void OneClickBingWallpaper::initAction()
+{
+    autoAction = new QAction(tr("Auto Setting"),this);
+    
+    cinnamonAction = new QAction(tr("Cinnamon"),this);
+    deepinAction = new QAction(tr("Deepin"),this);
+    gnomeAction = new QAction(tr("Gnome"),this);
+    kdeAction = new QAction(tr("KDE"),this);
+    mateAction = new QAction(tr("Mate"),this);
+    wmAction = new QAction(tr("WM"),this);
+    xfceAction = new QAction(tr("Xfce"),this);
+
+    zhAction = new QAction(tr("中文"),this);
+    enAction = new QAction(tr("English"),this);
+
+    settingAction = new QAction(tr("Setting"),this);
+
+    aboutAction = new QAction(tr("About"),this);
+
+    quitAction = new QAction(tr("Quit"),this);
+}
+
+void OneClickBingWallpaper::initMenu()
+{   
     trayMenu = new QMenu(this);
     moreMenu = new QMenu(tr("Specific DE"),this);
     langMenu = new QMenu(tr("Language"),this);
 
-    cinnamonAction = new QAction(tr("Cinnamon"),this);
-    connect(cinnamonAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
-    deepinAction = new QAction(tr("Deepin"),this);
-    connect(deepinAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
-    gnomeAction = new QAction(tr("Gnome"),this);
-    connect(gnomeAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
-    kdeAction = new QAction(tr("KDE"),this);
-    connect(kdeAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
-    mateAction = new QAction(tr("Mate"),this);
-    connect(mateAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
-    wmAction = new QAction(tr("WM"),this);
-    connect(wmAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
-    xfceAction = new QAction(tr("Xfce"),this);
-    connect(xfceAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
-
-    zhAction = new QAction(tr("中文"),this);
-    connect(zhAction,SIGNAL(triggered()),this,SLOT(updateLanguage()));
-    enAction = new QAction(tr("English"),this);
-    connect(enAction,SIGNAL(triggered()),this,SLOT(updateLanguage()));
-
-    settingAction = new QAction(tr("Setting"),this);
-    connect(settingAction,SIGNAL(triggered()),this,SLOT(showSettingWidget()));
-    aboutAction = new QAction(tr("About"),this);
-    connect(aboutAction,SIGNAL(triggered()),this,SLOT(showAboutWidget()));
-
-    autoAction = new QAction(tr("Auto Setting"),this);
-    connect(autoAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
-
     QList<QAction*> actionList;
     actionList << cinnamonAction << deepinAction << gnomeAction \
                 << kdeAction << mateAction << wmAction << xfceAction;
-
-    quitAction = new QAction(tr("Quit"),this);
-    connect(quitAction,&QAction::triggered,[](){
-        DApplication * app;
-        app->exit(0);
-    });
-    
     moreMenu->addActions(actionList);
 
     actionList.clear();
@@ -84,29 +88,47 @@ OneClickBingWallpaper::OneClickBingWallpaper(QWidget *parent)
     trayMenu->addSeparator();
     trayMenu->addAction(quitAction);
     
+    QIcon icon = QIcon(":/OneClickBingWallpaper.png");
+    trayIcon = new QSystemTrayIcon(this);
+    trayIcon->setIcon(icon);
+    trayIcon->show();
     trayIcon->setContextMenu(trayMenu);
+}
 
-    DApplication * app;
-    configPath = QString("%1/%2/%3.conf").arg(
-            QStandardPaths::standardLocations(QStandardPaths::ConfigLocation).first(), 
-            app->organizationName(), 
-            app->applicationName()
-        );
-    backend = new QSettingBackend(configPath);
-    dsettings = DSettings::fromJsonFile(":/config/settings.json");
-    dsettings->setBackend(backend);
+void OneClickBingWallpaper::initConnect()
+{
+    connect(trayIcon,SIGNAL(activated(QSystemTrayIcon::ActivationReason)),this,SLOT(trayIconActivated(QSystemTrayIcon::ActivationReason)));
 
+    connect(autoAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
+
+    connect(cinnamonAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
+    connect(deepinAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
+    connect(gnomeAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
+    connect(kdeAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
+    connect(mateAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
+    connect(wmAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
+    connect(xfceAction,SIGNAL(triggered()),this,SLOT(updateWallpaper()));
+
+    connect(zhAction,SIGNAL(triggered()),this,SLOT(updateLanguage()));
+    connect(enAction,SIGNAL(triggered()),this,SLOT(updateLanguage()));
+
+    connect(settingAction,SIGNAL(triggered()),this,SLOT(showSettingWidget()));
+
+    connect(aboutAction,SIGNAL(triggered()),this,SLOT(showAboutWidget()));
+    
+    connect(quitAction,&QAction::triggered,[](){
+        DApplication * app;
+        app->exit(0);
+    });
+}
+
+void OneClickBingWallpaper::initSettingOptions()
+{
     auto duration = dsettings->option("base.autoupdate.duration");
     QMap<QString, QVariant> durationOptions;
     durationOptions.insert("keys", QStringList() << "-1" << "5" << "30");
     durationOptions.insert("values", QStringList() << tr("Disable") << tr("Every 5 minute") << tr("Every 30 minute"));
     duration->setData("items",durationOptions);
-
-}
-
-OneClickBingWallpaper::~OneClickBingWallpaper()
-{
-
 }
 
 void OneClickBingWallpaper::trayIconActivated(QSystemTrayIcon::ActivationReason reason)

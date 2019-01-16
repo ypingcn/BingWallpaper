@@ -53,6 +53,11 @@ private:
     Dtk::Core::QSettingBackend * backend;
     DSettings * dsettings;
 
+    void initAction();
+    void initMenu();
+    void initConnect();
+    void initSettingOptions();
+
 private slots:
     void trayIconActivated(QSystemTrayIcon::ActivationReason);
     void updateWallpaper();
