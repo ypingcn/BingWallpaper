@@ -2,7 +2,7 @@
 # -*- coding:utf-8 -*-
 
 from datetime import datetime
-import requests,time,os,argparse
+import requests,time,os,argparse,imghdr,random
 
 class Logger(object):
 
@@ -56,21 +56,25 @@ class BingWallpaper(object):
         self.baseUrl = "https://cn.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1"
         self.json = requests.get(self.baseUrl).json()
         imgLocation = self.json['images'][0]['url']
-        imgUrl = "https://cn.bing.com%s" % imgLocation
+        self.imgUrl = "https://cn.bing.com%s" % imgLocation
         lastIndex = imgLocation.rfind(".")
         imgSuffix = imgLocation[lastIndex+1:]
         self.imgName = "BingWallpaper-%s.%s" % ( time.strftime("%Y-%m-%d",time.localtime()), imgSuffix )
-        self.imgPath = "%s/BingWallpaper/%s" % ( os.path.expanduser('~'), self.imgName)
+        self.imgFolder = "%s/BingWallpaper" % os.path.expanduser('~')
+        self.imgPath = "%s/%s" % ( self.imgFolder, self.imgName)
         self.notifyIconPath = "/usr/share/icons/hicolor/64x64/apps/OneClickBingWallpaper.png"
 
         self.de = de
         self.command = command
-
-        if not os.path.exists(self.imgPath):
-            Downloader.get(imgUrl,self.imgPath)
+        self.random = False
 
     def setWallpaper(self):
         Logger.info("setting begin")
+        
+        if (not os.path.exists(self.imgPath) ) and (not self.random):
+            Logger.info("%s not exist,downloading..." % self.imgName)
+            Downloader.get(self.imgUrl,self.imgPath)
+        
         Logger.info("de: %s, command: %s" % (self.de, self.command))
 
         if self.de == "cinnamon":
@@ -127,11 +131,16 @@ class BingWallpaper(object):
         Logger.info("setting finish")
 
     def notify(self):
-        content = self.json['images'][0]['copyright']
-        lastIndex = content.rfind("(")
+        content = ""
+        if not self.random:
+            content = self.json['images'][0]['copyright']
+            lastIndex = content.rfind("(")
+            content = content[:lastIndex]
+        else:
+            content = self.imgName
         if os.path.exists(self.notifyIconPath):
             options = "--icon=%s" % self.notifyIconPath
-        shell = "notify-send %s:%s %s" % ( time.strftime("%Y-%m-%d",time.localtime()), content[:lastIndex], options)
+        shell = "notify-send %s:%s %s" % ( time.strftime("%Y-%m-%d",time.localtime()), content, options)
         print(shell)
         os.system(shell)
     
@@ -150,9 +159,17 @@ class BingWallpaper(object):
                 self.de = keywords[key]
                 break
 
+    def randomImage(self):
+        self.random = True
+        files = [item for item in os.listdir(self.imgFolder) if imghdr.what("%s/%s" % (self.imgFolder, item))]
+        self.imgName = files[random.randint(0,len(files))]
+        self.imgPath = "%s/%s" % (self.imgFolder, self.imgName)
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--auto",help="auto detect desktop environment(Beta)",action="store_true")
+    parser.add_argument("--random",help="random pick image from default folder to set wallpaper",action="store_true")
     parser.add_argument("-d",help="desktop environment: xfce etc")
     parser.add_argument("-c",help="command in your device to set desktop background,{{}} will be replaced with the true images path(not end with \)")
     args = parser.parse_args()
@@ -160,4 +177,6 @@ if __name__ == '__main__':
     bw = BingWallpaper(args.d,args.c)
     if args.auto:
         bw.detect()
+    if args.random:
+        bw.randomImage()
     bw.setWallpaper()
