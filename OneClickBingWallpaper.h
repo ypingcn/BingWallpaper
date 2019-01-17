@@ -79,6 +79,7 @@ private:
 
 private slots:
     void trayIconActivated(QSystemTrayIcon::ActivationReason);
+    void settingsValueChanged(const QString &key, const QVariant &value);
     void updateWallpaper(QString argument);
     void updateLanguage(QString value);
 

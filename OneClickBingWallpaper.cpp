@@ -126,6 +126,7 @@ void OneClickBingWallpaper::initMenu()
 void OneClickBingWallpaper::initConnect()
 {
     connect(trayIcon,SIGNAL(activated(QSystemTrayIcon::ActivationReason)),this,SLOT(trayIconActivated(QSystemTrayIcon::ActivationReason)));
+    connect(dsettings,SIGNAL(valueChanged(QString,QVariant)),this,SLOT(settingsValueChanged(QString,QVariant)));
 
     connect(autoAction, &QAction::triggered, [this](){
         updateWallpaper("--auto");
@@ -153,7 +154,7 @@ void OneClickBingWallpaper::initSettingOptions()
     auto updateType = dsettings->option("base.update.type");
     QMap<QString, QVariant> updateTypeOptions;
     updateTypeOptions.insert("keys", QStringList() << "lastest" << "random" );
-    updateTypeOptions.insert("values", QStringList() << "Lastest" << "Random" );
+    updateTypeOptions.insert("values", QStringList() << tr("Lastest") << tr("Random") );
     updateType->setData("items",updateTypeOptions);
 }
 
@@ -190,6 +191,20 @@ void OneClickBingWallpaper::trayIconActivated(QSystemTrayIcon::ActivationReason 
             break;
         default:
             break;
+    }
+}
+
+void OneClickBingWallpaper::settingsValueChanged(const QString &key, const QVariant &value)
+{
+    qDebug() << "settingsValueChanged " << key << " " << value << endl;
+    if(key == "base.autoupdate.interval")
+    {
+        timer->stop();
+        if(value.toInt() != -1)
+        {
+            timer->setInterval(value.toInt() * 60 * 1000);
+            timer->start();
+        }
     }
 }
 
