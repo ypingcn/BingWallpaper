@@ -58,7 +58,7 @@ OneClickBingWallpaper::~OneClickBingWallpaper()
 
 void OneClickBingWallpaper::initAction()
 {        
-    for(int i = 1 ; i < vDesktopEnvironments.size() ; i++)
+    for(int i = 0 ; i < vDesktopEnvironments.size() ; i++)
     {
         DesktopEnvironmentType item = vDesktopEnvironments[i];
         QAction * action = new QAction(item.name,this);
