@@ -1,5 +1,5 @@
-#ifndef ONECLICKGO_H
-#define ONECLICKGO_H
+#ifndef ONECLICKBINGWALLPAPER_H
+#define ONECLICKBINGWALLPAPER_H
 
 #include <QWidget>
 #include <QSystemTrayIcon>
@@ -7,8 +7,42 @@
 #include <QMessageBox>
 #include <QAction>
 #include <QMenu>
+#include <QTimer>
+#include <qsettingbackend.h>
 
-#define PYFILE_MD5_CHECK
+#include <DSettingsDialog>
+#include <DSettings>
+#include <DSettingsOption>
+
+DCORE_BEGIN_NAMESPACE
+class DSettings;
+DCORE_END_NAMESPACE
+
+DCORE_USE_NAMESPACE
+
+struct DesktopEnvironmentType
+{
+public:
+    QString name;
+    QString argument;
+};
+
+struct LanguageType
+{
+public:
+    QString name;
+    QString value;
+};
+
+static QVector<DesktopEnvironmentType> vDesktopEnvironments = {
+    {QObject::tr("Cinnamon"),"-d cinnamon"}, {QObject::tr("Deepin"),"-d deepin"},
+    {QObject::tr("Gnome"),"-d gnome"},{QObject::tr("KDE"),"-d kde"},{QObject::tr("Mate"),"-d mate"},
+    {QObject::tr("WM"),"-d wm"},{QObject::tr("Xfce"),"-d xfce"}
+};
+
+static QVector<LanguageType> vLanguages = {
+    {QObject::tr("简体中文"),"zh-CN"}, {QObject::tr("English"),"en-US"}
+};
 
 class OneClickBingWallpaper : public QWidget
 {
@@ -22,23 +56,35 @@ private:
     QMenu * trayMenu, * moreMenu, * langMenu;
 
     QAction * autoAction;
-    QAction * cinnamonAction;
-    QAction * deepinAction;
-    QAction * gnomeAction;
-    QAction * kdeAction;
-    QAction * mateAction;
-    QAction * wmAction;
-    QAction * xfceAction;
+    QVector<QAction*> vDEActions;
 
-    QAction * zhAction;
-    QAction * enAction;
+    QVector<QAction*> vLangActions;
+
+    QAction * settingAction;
+    QAction * aboutAction;
 
     QAction * quitAction;
 
+    QString configPath;
+    Dtk::Core::QSettingBackend * backend;
+    DSettings * dsettings;
+
+    QTimer * timer;
+
+    void initAction();
+    void initMenu();
+    void initConnect();
+    void initSettingOptions();
+    void initOther();
+
 private slots:
     void trayIconActivated(QSystemTrayIcon::ActivationReason);
-    void updateWallpaper();
-    void updateLanguage();
+    void settingsValueChanged(const QString &key, const QVariant &value);
+    void updateWallpaper(QString argument);
+    void updateLanguage(QString value);
+
+    void showSettingWidget();
+    void showAboutWidget();
 };
 
-#endif // ONECLICKGO_H
+#endif // ONECLICKBINGWALLPAPER_H

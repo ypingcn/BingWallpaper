@@ -33,23 +33,24 @@ SOURCES += \
 
 HEADERS += \
     OneClickBingWallpaper.h \
-    OneClickBingWallpaperConfig.h
+    OneClickBingWallpaperConfig.h \
+    OneClickBingWallpaperTranslation.h
 
 RESOURCES += \
-    img.qrc
+    resource/resource.qrc
 
 
-icons.files = OneClickBingWallpaper.png
-icons_16x16.files = icons/16x16/OneClickBingWallpaper.png
-icons_22x22.files = icons/22x22/OneClickBingWallpaper.png
-icons_24x24.files = icons/24x24/OneClickBingWallpaper.png
-icons_28x28.files = icons/28x28/OneClickBingWallpaper.png
-icons_32x32.files = icons/32x32/OneClickBingWallpaper.png
-icons_36x36.files = icons/36x36/OneClickBingWallpaper.png
-icons_48x48.files = icons/48x48/OneClickBingWallpaper.png
-icons_64x64.files = icons/64x64/OneClickBingWallpaper.png
-icons_72x72.files = icons/72x72/OneClickBingWallpaper.png
-icons_96x96.files = icons/96x96/OneClickBingWallpaper.png
+icons.files = resource/OneClickBingWallpaper.png
+icons_16x16.files = resource/icons/16x16/OneClickBingWallpaper.png
+icons_22x22.files = resource/icons/22x22/OneClickBingWallpaper.png
+icons_24x24.files = resource/icons/24x24/OneClickBingWallpaper.png
+icons_28x28.files = resource/icons/28x28/OneClickBingWallpaper.png
+icons_32x32.files = resource/icons/32x32/OneClickBingWallpaper.png
+icons_36x36.files = resource/icons/36x36/OneClickBingWallpaper.png
+icons_48x48.files = resource/icons/48x48/OneClickBingWallpaper.png
+icons_64x64.files = resource/icons/64x64/OneClickBingWallpaper.png
+icons_72x72.files = resource/icons/72x72/OneClickBingWallpaper.png
+icons_96x96.files = resource/icons/96x96/OneClickBingWallpaper.png
 desktop.files = OneClickBingWallpaper.desktop
 local.files = i18n/*.qm
 
