@@ -200,9 +200,20 @@ void OneClickBingWallpaper::settingsValueChanged(const QString &key, const QVari
     if(key == "base.autoupdate.interval")
     {
         timer->stop();
-        if(value.toInt() != -1)
+        auto enable = dsettings->option("base.autoupdate.enable");
+        if(value.toInt() != -1 && enable->value().toBool())
         {
             timer->setInterval(value.toInt() * 60 * 1000);
+            timer->start();
+        }
+    }
+    else if(key == "base.autoupdate.enable")
+    {
+        timer->stop();
+        auto interval = dsettings->option("base.autoupdate.interval");
+        if(value.toBool() && interval->value().toInt() != -1)
+        {
+            timer->setInterval(interval->value().toInt() * 60 * 1000);
             timer->start();
         }
     }
