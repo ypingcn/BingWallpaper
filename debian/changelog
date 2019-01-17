@@ -1,8 +1,21 @@
-oneclickbingwallpaper (0.5) unstable; urgency=low
+oneclickbingwallpaper (0.6) unstable; urgency=low
 
   * OneClickBingWallpaper
 
-  Multi language and switch support
-  More specific description in menu
+   - 界面
+  添加 设置窗口
+  添加 关于窗口
+   - 功能
+  添加 启动就更新壁纸
+  添加 定时更换壁纸
+  添加 随机设置壁纸
+  
+   - GUI
+  Add setting dialog
+  Add about dialog
+   - Feature
+  Add update wallpaper when tool startup
+  Add update wallpaper in specific interval
+  Add update wallpaper using random image
 
- -- ypingcn <1344632698@qq.com>  Fri, 28 Dec 2018 14:20:00 +0800
+ -- ypingcn <1344632698@qq.com>  Thur, 17 Jan 2019 21:30:00 +0800
