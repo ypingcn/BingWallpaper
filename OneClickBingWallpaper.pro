@@ -33,7 +33,8 @@ SOURCES += \
 
 HEADERS += \
     OneClickBingWallpaper.h \
-    OneClickBingWallpaperConfig.h
+    OneClickBingWallpaperConfig.h \
+    OneClickBingWallpaperTranslation.h
 
 RESOURCES += \
     resource/resource.qrc
