@@ -37,10 +37,10 @@ OneClickBingWallpaper::OneClickBingWallpaper(QWidget *parent)
         updateWallpaper("--auto");
     });
     auto enable = dsettings->option("base.autoupdate.enable");
-    auto duration = dsettings->option("base.autoupdate.duration");
-    if(enable->value().toBool() && duration->value().toInt() != -1)
+    auto interval = dsettings->option("base.autoupdate.interval");
+    if(enable->value().toBool() && interval->value().toInt() != -1)
     {
-        timer->setInterval(duration->value().toInt()*60*1000);
+        timer->setInterval(interval->value().toInt()*60*1000);
         timer->start();
     }
 
@@ -143,11 +143,18 @@ void OneClickBingWallpaper::initConnect()
 
 void OneClickBingWallpaper::initSettingOptions()
 {
-    auto duration = dsettings->option("base.autoupdate.duration");
-    QMap<QString, QVariant> durationOptions;
-    durationOptions.insert("keys", QStringList() << "-1" << "5" << "30");
-    durationOptions.insert("values", QStringList() << tr("Disable") << tr("Every 5 minute") << tr("Every 30 minute"));
-    duration->setData("items",durationOptions);
+    auto interval = dsettings->option("base.autoupdate.interval");
+    QMap<QString, QVariant> intervalOptions;
+    intervalOptions.insert("keys", QStringList() << "-1" << "1" << "5" << "10" << "15" << "30" << "60");
+    intervalOptions.insert("values", QStringList() << tr("Disable") << tr("Every 1 minute") << tr("Every 5 minute") << tr("Every 10 minute") 
+                                                                    << tr("Every 15 minute") << tr("Every 30 minute") << tr("Every 60 minute"));
+    interval->setData("items",intervalOptions);
+
+    auto updateType = dsettings->option("base.update.type");
+    QMap<QString, QVariant> updateTypeOptions;
+    updateTypeOptions.insert("keys", QStringList() << "lastest" << "random" );
+    updateTypeOptions.insert("values", QStringList() << "Lastest" << "Random" );
+    updateType->setData("items",updateTypeOptions);
 }
 
 void OneClickBingWallpaper::initOther()
@@ -189,15 +196,15 @@ void OneClickBingWallpaper::trayIconActivated(QSystemTrayIcon::ActivationReason 
 void OneClickBingWallpaper::updateWallpaper(QString argument)
 {
     bool pyFileVaild = true;
+    auto pythonCheck = dsettings->option("base.security.python-check");
 
     if(!QFile::exists(OneClickBingWallpaperConfig::pyFilePath))
     {
         QMessageBox::warning(nullptr, tr("Python File Not Found"), tr("Python file not found,please reinstall."), QMessageBox::Yes);
         pyFileVaild = false;
     }
-    else
+    else if(pythonCheck->value().toBool())
     {
-#ifdef PYFILE_MD5_CHECK
         QFile pyFile(OneClickBingWallpaperConfig::pyFilePath);
         if (pyFile.open(QFile::ReadOnly))
         {
@@ -213,13 +220,18 @@ void OneClickBingWallpaper::updateWallpaper(QString argument)
                     pyFileVaild = false;
             }
         }
-#endif // PYFILE_MD5_CHECK
     }
 
     if (pyFileVaild)
     {
         QProcess * process = new QProcess;
         QString command = QString("python3 %1 %2").arg(OneClickBingWallpaperConfig::pyFilePath,argument);
+        auto isRandom = dsettings->option("base.update.type");
+        if(isRandom->value().toString() == "random")
+        {
+            command += " --random";
+        }
+        qDebug() << command << endl;
         process->start(command);
     }
 }

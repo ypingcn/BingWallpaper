@@ -5,6 +5,18 @@
             "name": "Basic",
             "groups": [
                 {
+                    "key": "update",
+                    "name": "Update",
+                    "options": [
+                        {
+                            "key": "type",
+                            "name": "Type",
+                            "type": "combobox",
+                            "default": "lastest"
+                        }
+                    ]
+                },
+                {
                     "key": "autoupdate",
                     "name": "Auto Update",
                     "options": [
@@ -12,21 +24,34 @@
                             "key": "startup-enable",
                             "name": "",
                             "type": "checkbox",
-                            "text": "Autoupdate Bingwallpaper when startup",
+                            "text": "Autoupdate Bingwallpaper when tool startup",
                             "default": "false"
                         },
                         {
                             "key": "enable",
-                            "name": "Enable",
+                            "name": "",
                             "type": "checkbox",
-                            "text": "Autoupdate Bingwallpaper for special duration",
+                            "text": "Autoupdate Bingwallpaper in specific interval",
                             "default": "false"
                         },
                         {
-                            "key": "duration",
-                            "name": "Duration",
+                            "key": "interval",
+                            "name": "Interval",
                             "type": "combobox",
                             "default": "-1"
+                        }
+                    ]
+                },
+                {
+                    "key": "security",
+                    "name": "Security",
+                    "options": [
+                        {
+                            "key": "python-check",
+                            "name": "",
+                            "type": "checkbox",
+                            "text": "Check setting Python file's MD5",
+                            "default": "true"
                         }
                     ]
                 }

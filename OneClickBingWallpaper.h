@@ -20,8 +20,6 @@ DCORE_END_NAMESPACE
 
 DCORE_USE_NAMESPACE
 
-#define PYFILE_MD5_CHECK
-
 struct DesktopEnvironmentType
 {
 public:
