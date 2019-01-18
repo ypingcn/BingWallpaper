@@ -15,6 +15,8 @@ void GenerateSettingTranslate()
     auto baseAutoupdateStartupenableText = QObject::tr("Autoupdate Bingwallpaper when tool startup");
     auto baseAutoupdateEnableText = QObject::tr("Autoupdate Bingwallpaper in specific interval");
     auto baseSecurityPythoncheckText = QObject::tr("Check setting Python file's MD5");
+
+    auto restoreDefaults = QObject::tr("Restore Defaults");
 }
 
 #endif // ONECLICKBINGWALLPAPERTRANSLATION_H
