@@ -71,6 +71,8 @@ private:
 
     QTimer * timer;
 
+    QString imagePath;
+
     void initAction();
     void initMenu();
     void initConnect();
