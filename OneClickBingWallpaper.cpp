@@ -16,6 +16,8 @@ DWIDGET_USE_NAMESPACE
 #include <QTranslator>
 #include <QDesktopWidget>
 #include <QStandardPaths>
+#include <QDesktopServices>
+#include <QUrl>
 
 #include <DAboutDialog>
 
@@ -23,6 +25,9 @@ OneClickBingWallpaper::OneClickBingWallpaper(QWidget *parent)
     : QWidget(parent)
 {
     DApplication * app;
+    imagePath = QString("%1/%2").arg(
+        QStandardPaths::standardLocations(QStandardPaths::HomeLocation).first(),
+        "BingWallpaper");
     configPath = QString("%1/%2/%3.conf").arg(
             QStandardPaths::standardLocations(QStandardPaths::ConfigLocation).first(), 
             app->organizationName(), 
@@ -197,6 +202,27 @@ void OneClickBingWallpaper::trayIconActivated(QSystemTrayIcon::ActivationReason 
 void OneClickBingWallpaper::settingsValueChanged(const QString &key, const QVariant &value)
 {
     qDebug() << "settingsValueChanged " << key << " " << value << endl;
+    if(key == "base.update.type" && value.toString() == "random")
+    {
+        QDir dir(imagePath);
+        qDebug() << "imagePath " << imagePath << endl;
+        if (!dir.exists())
+        {
+            QMessageBox::information(nullptr, tr("Folder Not Found"),
+                                     tr("BingWallpaper folder %1 in home is not exist, tool will create it by default").arg(imagePath),
+                                     QMessageBox::Ok);
+            bool res = dir.mkdir(imagePath);
+            qDebug() << "create folder " << imagePath << ":" << res << endl;
+        }
+        dir.setFilter(QDir::Files);
+        if (dir.entryInfoList().count() == 0)
+        {
+            QMessageBox::information(nullptr, tr("Attention! Empty Folder"),
+                                     tr("Empty folder for %1 ,\n"
+                                     "if you want to update wallpaper for random, please make sure to put some image file in this folder, or use lastest first").arg(imagePath),
+                                     QMessageBox::Ok);
+        }
+    }
     if(key == "base.autoupdate.interval")
     {
         timer->stop();
@@ -223,13 +249,43 @@ void OneClickBingWallpaper::updateWallpaper(QString argument)
 {
     bool pyFileVaild = true;
     auto pythonCheck = dsettings->option("base.security.python-check");
+    auto isRandom = dsettings->option("base.update.type");
+    QDir dir(imagePath);
+
+    if (!dir.exists())
+    {
+        QMessageBox::information(nullptr, tr("Folder Not Found"),
+                                 tr("BingWallpaper folder %1 in home is not exist, tool will create it by default").arg(imagePath),
+                                 QMessageBox::Ok);
+        bool res = dir.mkdir(imagePath);
+        qDebug() << "create folder " << imagePath << ":" << res << endl;
+    }
+
+    dir.setFilter(QDir::Files);
 
     if(!QFile::exists(OneClickBingWallpaperConfig::pyFilePath))
     {
-        QMessageBox::warning(nullptr, tr("Python File Not Found"), tr("Python file not found,please reinstall."), QMessageBox::Yes);
-        pyFileVaild = false;
+        QMessageBox::warning(nullptr, tr("Python File Not Found"), tr("Python file not found,please reinstall."), QMessageBox::Ok);
+        return;
     }
-    else if(pythonCheck->value().toBool())
+
+    if(dir.entryInfoList().count() == 0 && isRandom->value().toString() == "random")
+    {
+        QMessageBox::StandardButton choice;
+        choice = QMessageBox::information(nullptr, tr("Attention! Empty Folder"),
+                                tr("Empty folder for %1.\n"
+                                "If you want to update wallpaper for random, please make sure to put some image file in this folder, or use lastest first.\n"
+                                "Setting Abort, click YES to open folder, NO to ignore.").arg(imagePath),
+                                QMessageBox::Yes, QMessageBox::No);
+        if(choice == QMessageBox::Yes)
+        {
+            bool ok = QDesktopServices::openUrl(QUrl(imagePath));
+            qDebug() << "open folder :" << ok << endl;
+        }
+        return;
+    }
+
+    if(pythonCheck->value().toBool())
     {
         QFile pyFile(OneClickBingWallpaperConfig::pyFilePath);
         if (pyFile.open(QFile::ReadOnly))
@@ -241,7 +297,9 @@ void OneClickBingWallpaper::updateWallpaper(QString argument)
             if (md5 != OneClickBingWallpaperConfig::pyFileMD5)
             {
                 QMessageBox::StandardButton choice;
-                choice = QMessageBox::information(nullptr, tr("Python File Have Modified"), tr("Python File Have Modified\nClick YES to ignore it"), QMessageBox::Yes, QMessageBox::No);
+                choice = QMessageBox::information(nullptr, tr("Python File Have Modified"), 
+                                                tr("Python File Have Modified\nClick YES to ignore it"), 
+                                                QMessageBox::Yes, QMessageBox::No);
                 if (choice == QMessageBox::No)
                     pyFileVaild = false;
             }
@@ -252,7 +310,6 @@ void OneClickBingWallpaper::updateWallpaper(QString argument)
     {
         QProcess * process = new QProcess;
         QString command = QString("python3 %1 %2").arg(OneClickBingWallpaperConfig::pyFilePath,argument);
-        auto isRandom = dsettings->option("base.update.type");
         if(isRandom->value().toString() == "random")
         {
             command += " --random";

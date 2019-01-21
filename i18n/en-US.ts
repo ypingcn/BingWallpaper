@@ -4,103 +4,134 @@
 <context>
     <name>OneClickBingWallpaper</name>
     <message>
-        <location filename="../OneClickBingWallpaper.cpp" line="94"/>
-        <source>Specific DE</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../OneClickBingWallpaper.cpp" line="95"/>
-        <source>Language</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../OneClickBingWallpaper.cpp" line="82"/>
+        <location filename="../OneClickBingWallpaper.cpp" line="87"/>
         <source>Auto Setting</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../OneClickBingWallpaper.cpp" line="84"/>
+        <location filename="../OneClickBingWallpaper.cpp" line="89"/>
         <source>Setting</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../OneClickBingWallpaper.cpp" line="86"/>
+        <location filename="../OneClickBingWallpaper.cpp" line="91"/>
         <source>About</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../OneClickBingWallpaper.cpp" line="88"/>
+        <location filename="../OneClickBingWallpaper.cpp" line="93"/>
         <source>Quit</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../OneClickBingWallpaper.cpp" line="150"/>
+        <location filename="../OneClickBingWallpaper.cpp" line="99"/>
+        <source>Specific DE</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../OneClickBingWallpaper.cpp" line="100"/>
+        <source>Language</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../OneClickBingWallpaper.cpp" line="155"/>
         <source>Disable</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../OneClickBingWallpaper.cpp" line="150"/>
+        <location filename="../OneClickBingWallpaper.cpp" line="155"/>
         <source>Every 1 minute</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../OneClickBingWallpaper.cpp" line="150"/>
+        <location filename="../OneClickBingWallpaper.cpp" line="155"/>
         <source>Every 5 minute</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../OneClickBingWallpaper.cpp" line="150"/>
+        <location filename="../OneClickBingWallpaper.cpp" line="155"/>
         <source>Every 10 minute</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../OneClickBingWallpaper.cpp" line="151"/>
+        <location filename="../OneClickBingWallpaper.cpp" line="156"/>
         <source>Every 15 minute</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../OneClickBingWallpaper.cpp" line="151"/>
+        <location filename="../OneClickBingWallpaper.cpp" line="156"/>
         <source>Every 30 minute</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../OneClickBingWallpaper.cpp" line="151"/>
+        <location filename="../OneClickBingWallpaper.cpp" line="156"/>
         <source>Every 60 minute</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../OneClickBingWallpaper.cpp" line="157"/>
+        <location filename="../OneClickBingWallpaper.cpp" line="162"/>
         <source>Lastest</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../OneClickBingWallpaper.cpp" line="157"/>
+        <location filename="../OneClickBingWallpaper.cpp" line="162"/>
         <source>Random</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../OneClickBingWallpaper.cpp" line="218"/>
+        <location filename="../OneClickBingWallpaper.cpp" line="211"/>
+        <location filename="../OneClickBingWallpaper.cpp" line="257"/>
+        <source>Folder Not Found</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../OneClickBingWallpaper.cpp" line="212"/>
+        <location filename="../OneClickBingWallpaper.cpp" line="258"/>
+        <source>BingWallpaper folder %1 in home is not exist, tool will create it by default</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../OneClickBingWallpaper.cpp" line="220"/>
+        <location filename="../OneClickBingWallpaper.cpp" line="275"/>
+        <source>Attention! Empty Folder</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../OneClickBingWallpaper.cpp" line="221"/>
+        <source>Empty folder for %1 ,
+if you want to update wallpaper for random, please make sure to put some image file in this folder, or use lastest first</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../OneClickBingWallpaper.cpp" line="268"/>
         <source>Python File Not Found</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../OneClickBingWallpaper.cpp" line="218"/>
+        <location filename="../OneClickBingWallpaper.cpp" line="268"/>
         <source>Python file not found,please reinstall.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../OneClickBingWallpaper.cpp" line="233"/>
+        <location filename="../OneClickBingWallpaper.cpp" line="276"/>
+        <source>Empty folder for %1.
+If you want to update wallpaper for random, please make sure to put some image file in this folder, or use lastest first.
+Setting Abort, click YES to open folder, NO to ignore.</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../OneClickBingWallpaper.cpp" line="300"/>
         <source>Python File Have Modified</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../OneClickBingWallpaper.cpp" line="233"/>
+        <location filename="../OneClickBingWallpaper.cpp" line="301"/>
         <source>Python File Have Modified
 Click YES to ignore it</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../OneClickBingWallpaper.cpp" line="289"/>
+        <location filename="../OneClickBingWallpaper.cpp" line="357"/>
         <source>A tool to set lastest Bingwallpaper in Linux desktop.</source>
         <translation></translation>
     </message>
@@ -195,6 +226,11 @@ Click YES to ignore it</source>
     <message>
         <location filename="../OneClickBingWallpaperTranslation.h" line="17"/>
         <source>Check setting Python file&apos;s MD5</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../OneClickBingWallpaperTranslation.h" line="19"/>
+        <source>Restore Defaults</source>
         <translation></translation>
     </message>
 </context>
