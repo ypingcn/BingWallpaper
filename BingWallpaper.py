@@ -14,9 +14,11 @@ class Logger(object):
         if "path" in kwargs:
             path = kwargs["path"]
 
+        str = "%s#error : %s\n" % ( time, content )
+        print(str,end="")
+
         with open(path,"a+") as file:
-            file.write("%s#error :" % time )
-            file.write("%s\n" % content )
+            file.write(str)
 
     @staticmethod
     def info(content,**kwargs):
@@ -24,10 +26,12 @@ class Logger(object):
         path = "%s/BingWallpaper/.oneclickbingwallpaper.log" % os.path.expanduser('~')
         if "path" in kwargs:
             path = kwargs["path"]
+        
+        str = "%s#info : %s\n" % ( time, content )
+        print(str,end="")
 
         with open(path,"a+") as file:
-            file.write("%s#info :" % time )
-            file.write("%s\n" % content )
+            file.write(str)
 
 class Downloader(object):
 
