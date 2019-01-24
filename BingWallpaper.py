@@ -53,10 +53,22 @@ class Downloader(object):
 class BingWallpaper(object):
 
     def __init__(self,de="",command=""):
-        self.baseUrl = "https://cn.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1"
-        self.json = requests.get(self.baseUrl).json()
+        path = "/HPImageArchive.aspx?format=js&idx=0&n=1"
+        baseUrls = ["https://www.bing.com",
+                   "https://www2.bing.com",
+                   "https://www4.bing.com",
+                   "https://cn.bing.com" ]
+        for baseUrl in baseUrls:
+            url = "%s/%s" % ( baseUrl, path )
+            rsp = requests.get(url)
+            if rsp.status_code == 200:
+                self.json = rsp.json()
+                self.bingDomain = baseUrl
+                Logger.info(baseUrl)
+                break
+
         imgLocation = self.json['images'][0]['url']
-        self.imgUrl = "https://cn.bing.com%s" % imgLocation
+        self.imgUrl = "%s%s" % ( self.bingDomain, imgLocation )
         lastIndex = imgLocation.rfind(".")
         imgSuffix = imgLocation[lastIndex+1:]
         self.imgName = "BingWallpaper-%s.%s" % ( time.strftime("%Y-%m-%d",time.localtime()), imgSuffix )
