@@ -14,9 +14,11 @@ class Logger(object):
         if "path" in kwargs:
             path = kwargs["path"]
 
+        str = "%s#error : %s\n" % ( time, content )
+        print(str,end="")
+
         with open(path,"a+") as file:
-            file.write("%s#error :" % time )
-            file.write("%s\n" % content )
+            file.write(str)
 
     @staticmethod
     def info(content,**kwargs):
@@ -24,10 +26,12 @@ class Logger(object):
         path = "%s/BingWallpaper/.oneclickbingwallpaper.log" % os.path.expanduser('~')
         if "path" in kwargs:
             path = kwargs["path"]
+        
+        str = "%s#info : %s\n" % ( time, content )
+        print(str,end="")
 
         with open(path,"a+") as file:
-            file.write("%s#info :" % time )
-            file.write("%s\n" % content )
+            file.write(str)
 
 class Downloader(object):
 
@@ -53,10 +57,22 @@ class Downloader(object):
 class BingWallpaper(object):
 
     def __init__(self,de="",command=""):
-        self.baseUrl = "https://cn.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1"
-        self.json = requests.get(self.baseUrl).json()
+        path = "/HPImageArchive.aspx?format=js&idx=0&n=1"
+        baseUrls = ["https://www.bing.com",
+                   "https://www2.bing.com",
+                   "https://www4.bing.com",
+                   "https://cn.bing.com" ]
+        for baseUrl in baseUrls:
+            url = "%s/%s" % ( baseUrl, path )
+            rsp = requests.get(url)
+            if rsp.status_code == 200:
+                self.json = rsp.json()
+                self.bingDomain = baseUrl
+                Logger.info(baseUrl)
+                break
+
         imgLocation = self.json['images'][0]['url']
-        self.imgUrl = "https://cn.bing.com%s" % imgLocation
+        self.imgUrl = "%s%s" % ( self.bingDomain, imgLocation )
         lastIndex = imgLocation.rfind(".")
         imgSuffix = imgLocation[lastIndex+1:]
         self.imgName = "BingWallpaper-%s.%s" % ( time.strftime("%Y-%m-%d",time.localtime()), imgSuffix )
