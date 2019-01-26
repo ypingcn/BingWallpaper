@@ -173,21 +173,6 @@ void OneClickBingWallpaper::initOther()
 
 void OneClickBingWallpaper::trayIconActivated(QSystemTrayIcon::ActivationReason reason)
 {
-    DApplication * app;
-    QSettings settings(app->organizationName(),app->applicationName());
-
-    OneClickBingWallpaperConfig::updateLanguagesSetting(settings);
-
-    QTranslator translator;
-    const QString i18nFilePath = OneClickBingWallpaperConfig::geti18nFilePath(settings);
-    if(QFile::exists(i18nFilePath))
-    {
-        translator.load(i18nFilePath);
-    }
-
-    app->installTranslator(&translator);
-
-
     switch(reason)
     {
         case QSystemTrayIcon::Context:
@@ -315,6 +300,9 @@ void OneClickBingWallpaper::updateLanguage(QString value)
     qDebug() << settings.value("lang") << endl;
     settings.setValue("lang",value);
     qDebug() << settings.value("lang") << endl;
+
+    app->quit();
+    QProcess::startDetached(app->arguments()[0], app->arguments());
 }
 
 void OneClickBingWallpaper::showSettingWidget()
