@@ -41,9 +41,8 @@ OneClickBingWallpaper::OneClickBingWallpaper(QWidget *parent)
     connect(timer, &QTimer::timeout, [this]() {
         updateWallpaper("--auto");
     });
-    auto enable = dsettings->option("base.autoupdate.enable");
     auto interval = dsettings->option("base.autoupdate.interval");
-    if(enable->value().toBool() && interval->value().toInt() != -1)
+    if(interval->value().toInt() != -1)
     {
         timer->setInterval(interval->value().toInt()*60*1000);
         timer->start();
@@ -226,20 +225,9 @@ void OneClickBingWallpaper::settingsValueChanged(const QString &key, const QVari
     if(key == "base.autoupdate.interval")
     {
         timer->stop();
-        auto enable = dsettings->option("base.autoupdate.enable");
-        if(value.toInt() != -1 && enable->value().toBool())
+        if(value.toInt() != -1 )
         {
             timer->setInterval(value.toInt() * 60 * 1000);
-            timer->start();
-        }
-    }
-    else if(key == "base.autoupdate.enable")
-    {
-        timer->stop();
-        auto interval = dsettings->option("base.autoupdate.interval");
-        if(value.toBool() && interval->value().toInt() != -1)
-        {
-            timer->setInterval(interval->value().toInt() * 60 * 1000);
             timer->start();
         }
     }
