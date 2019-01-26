@@ -1,21 +1,13 @@
-oneclickbingwallpaper (0.6) unstable; urgency=low
+oneclickbingwallpaper (0.7) unstable; urgency=low
 
   * OneClickBingWallpaper
 
-   - 界面
-  添加 设置窗口
-  添加 关于窗口
-   - 功能
-  添加 启动就更新壁纸
-  添加 定时更换壁纸
-  添加 随机设置壁纸
-  
-   - GUI
-  Add setting dialog
-  Add about dialog
-   - Feature
-  Add update wallpaper when tool startup
-  Add update wallpaper in specific interval
-  Add update wallpaper using random image
+  切换语言后自动重启程序
+  定时更换壁纸的选项从必须同时开启两个选项调整到一个
+  文案调整
 
- -- ypingcn <1344632698@qq.com>  Thu, 17 Jan 2019 21:30:00 +0800
+  Restart program after switching language
+  Adjust to one option instead of two for update wallpaper in specific interval
+  Adjust description for automatic detection in update ( auto setting -> update )
+
+ -- ypingcn <1344632698@qq.com>  Sat, 26 Jan 2019 11:30:00 +0800
