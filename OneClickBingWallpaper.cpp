@@ -83,7 +83,7 @@ void OneClickBingWallpaper::initAction()
         vLangActions.push_back(action);
     }
 
-    autoAction = new QAction(tr("Auto Setting"),this);
+    updateAction = new QAction(tr("Update"),this);
 
     settingAction = new QAction(tr("Setting"),this);
 
@@ -112,7 +112,7 @@ void OneClickBingWallpaper::initMenu()
     }
     langMenu->addActions(actionList);
 
-    trayMenu->addAction(autoAction);
+    trayMenu->addAction(updateAction);
     trayMenu->addMenu(moreMenu);
     trayMenu->addMenu(langMenu);
     trayMenu->addAction(settingAction);
@@ -132,7 +132,7 @@ void OneClickBingWallpaper::initConnect()
     connect(trayIcon,SIGNAL(activated(QSystemTrayIcon::ActivationReason)),this,SLOT(trayIconActivated(QSystemTrayIcon::ActivationReason)));
     connect(dsettings,SIGNAL(valueChanged(QString,QVariant)),this,SLOT(settingsValueChanged(QString,QVariant)));
 
-    connect(autoAction, &QAction::triggered, [this](){
+    connect(updateAction, &QAction::triggered, [this](){
         updateWallpaper("--auto");
     });
 

@@ -55,7 +55,7 @@ private:
     QSystemTrayIcon * trayIcon;
     QMenu * trayMenu, * moreMenu, * langMenu;
 
-    QAction * autoAction;
+    QAction * updateAction;
     QVector<QAction*> vDEActions;
 
     QVector<QAction*> vLangActions;
