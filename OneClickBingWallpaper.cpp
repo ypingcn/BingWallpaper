@@ -41,9 +41,8 @@ OneClickBingWallpaper::OneClickBingWallpaper(QWidget *parent)
     connect(timer, &QTimer::timeout, [this]() {
         updateWallpaper("--auto");
     });
-    auto enable = dsettings->option("base.autoupdate.enable");
     auto interval = dsettings->option("base.autoupdate.interval");
-    if(enable->value().toBool() && interval->value().toInt() != -1)
+    if(interval->value().toInt() != -1)
     {
         timer->setInterval(interval->value().toInt()*60*1000);
         timer->start();
@@ -84,7 +83,7 @@ void OneClickBingWallpaper::initAction()
         vLangActions.push_back(action);
     }
 
-    autoAction = new QAction(tr("Auto Setting"),this);
+    updateAction = new QAction(tr("Update"),this);
 
     settingAction = new QAction(tr("Setting"),this);
 
@@ -113,7 +112,7 @@ void OneClickBingWallpaper::initMenu()
     }
     langMenu->addActions(actionList);
 
-    trayMenu->addAction(autoAction);
+    trayMenu->addAction(updateAction);
     trayMenu->addMenu(moreMenu);
     trayMenu->addMenu(langMenu);
     trayMenu->addAction(settingAction);
@@ -133,7 +132,7 @@ void OneClickBingWallpaper::initConnect()
     connect(trayIcon,SIGNAL(activated(QSystemTrayIcon::ActivationReason)),this,SLOT(trayIconActivated(QSystemTrayIcon::ActivationReason)));
     connect(dsettings,SIGNAL(valueChanged(QString,QVariant)),this,SLOT(settingsValueChanged(QString,QVariant)));
 
-    connect(autoAction, &QAction::triggered, [this](){
+    connect(updateAction, &QAction::triggered, [this](){
         updateWallpaper("--auto");
     });
 
@@ -174,21 +173,6 @@ void OneClickBingWallpaper::initOther()
 
 void OneClickBingWallpaper::trayIconActivated(QSystemTrayIcon::ActivationReason reason)
 {
-    DApplication * app;
-    QSettings settings(app->organizationName(),app->applicationName());
-
-    OneClickBingWallpaperConfig::updateLanguagesSetting(settings);
-
-    QTranslator translator;
-    const QString i18nFilePath = OneClickBingWallpaperConfig::geti18nFilePath(settings);
-    if(QFile::exists(i18nFilePath))
-    {
-        translator.load(i18nFilePath);
-    }
-
-    app->installTranslator(&translator);
-
-
     switch(reason)
     {
         case QSystemTrayIcon::Context:
@@ -226,20 +210,9 @@ void OneClickBingWallpaper::settingsValueChanged(const QString &key, const QVari
     if(key == "base.autoupdate.interval")
     {
         timer->stop();
-        auto enable = dsettings->option("base.autoupdate.enable");
-        if(value.toInt() != -1 && enable->value().toBool())
+        if(value.toInt() != -1 )
         {
             timer->setInterval(value.toInt() * 60 * 1000);
-            timer->start();
-        }
-    }
-    else if(key == "base.autoupdate.enable")
-    {
-        timer->stop();
-        auto interval = dsettings->option("base.autoupdate.interval");
-        if(value.toBool() && interval->value().toInt() != -1)
-        {
-            timer->setInterval(interval->value().toInt() * 60 * 1000);
             timer->start();
         }
     }
@@ -327,6 +300,9 @@ void OneClickBingWallpaper::updateLanguage(QString value)
     qDebug() << settings.value("lang") << endl;
     settings.setValue("lang",value);
     qDebug() << settings.value("lang") << endl;
+
+    app->quit();
+    QProcess::startDetached(app->arguments()[0], app->arguments());
 }
 
 void OneClickBingWallpaper::showSettingWidget()

@@ -28,13 +28,6 @@
                             "default": "false"
                         },
                         {
-                            "key": "enable",
-                            "name": "",
-                            "type": "checkbox",
-                            "text": "Autoupdate Bingwallpaper in specific interval",
-                            "default": "false"
-                        },
-                        {
                             "key": "interval",
                             "name": "Interval",
                             "type": "combobox",
