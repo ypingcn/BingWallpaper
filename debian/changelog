@@ -1,13 +1,11 @@
-oneclickbingwallpaper (0.7) unstable; urgency=low
+oneclickbingwallpaper (0.8) unstable; urgency=low
 
   * OneClickBingWallpaper
 
-  切换语言后自动重启程序
-  定时更换壁纸的选项从必须同时开启两个选项调整到一个
-  文案调整
+  修复自动重启程序的参数错误设置
+  修复打包过程中翻译文件生成的遗漏
 
-  Restart program after switching language
-  Adjust to one option instead of two for update wallpaper in specific interval
-  Adjust description for automatic detection in update ( auto setting -> update )
+  fix: arguments for restarting program
+  fix: translation file's generation for build package
 
- -- ypingcn <1344632698@qq.com>  Sat, 26 Jan 2019 11:30:00 +0800
+ -- ypingcn <1344632698@qq.com>  Thu, 31 Jan 2019 16:00:00 +0800

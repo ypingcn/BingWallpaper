@@ -302,7 +302,7 @@ void OneClickBingWallpaper::updateLanguage(QString value)
     qDebug() << settings.value("lang") << endl;
 
     app->quit();
-    QProcess::startDetached(app->arguments()[0], app->arguments());
+    QProcess::startDetached(app->arguments()[0]);
 }
 
 void OneClickBingWallpaper::showSettingWidget()
