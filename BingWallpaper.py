@@ -2,7 +2,7 @@
 # -*- coding:utf-8 -*-
 
 from datetime import datetime
-import requests,time,os,argparse,imghdr,random
+import requests,time,os,argparse,imghdr,random,sys
 
 class Logger(object):
 
@@ -14,8 +14,8 @@ class Logger(object):
         if "path" in kwargs:
             path = kwargs["path"]
 
-        str = "%s#error : %s\n" % ( time, content )
-        print(str,end="")
+        str = "%s|error|%s\n" % ( time, content )
+        sys.stderr.write(str)
 
         with open(path,"a+") as file:
             file.write(str)
@@ -27,8 +27,8 @@ class Logger(object):
         if "path" in kwargs:
             path = kwargs["path"]
         
-        str = "%s#info : %s\n" % ( time, content )
-        print(str,end="")
+        str = "%s|info |%s\n" % ( time, content )
+        sys.stdout.write(str)
 
         with open(path,"a+") as file:
             file.write(str)
@@ -40,16 +40,16 @@ class Downloader(object):
         try:
             downloadReponse = requests.get(url)
         except:
-            Logger.error("exception throw when getting %s" % fileName )
+            Logger.error("DownloadException|%s" % fileName )
 
         if downloadReponse.status_code != 200:
-            Logger.error("network error: %s" % str(downloadReponse.status_code) )
+            Logger.error("StatusCodeNot200|%s|%s" % ( str(downloadReponse.status_code), fileName ) )
 
         lastIndex = fileName.rfind("/")
         if lastIndex:
             if not os.path.exists(fileName[:lastIndex]):
                 os.mkdir(fileName[:lastIndex])
-                Logger.info("%s not exist,repairing ..." % fileName[:lastIndex] )
+                Logger.info("FolderNotExist|%s" % fileName[:lastIndex] )
 
         with open(fileName,"wb") as file:
             file.write(downloadReponse.content)
@@ -73,22 +73,22 @@ class BingWallpaper(object):
         try:
             rsp = requests.get(url)
         except requests.exceptions.InvalidURL:
-            Logger.error("InvaildURL")
+            Logger.error("InvaildURL|%s" % url)
             return -1
         except requests.exceptions.ConnectionError:
-            Logger.error("ConnectionError")
+            Logger.error("ConnectionError|%s" % url)
             return -1
         
         if rsp.status_code == 200:
             try:
                 self.json = rsp.json() # This *call* raises an exception if JSON decoding fails
             except ValueError:
-                Logger.error("ValueError")
+                Logger.error("ValueError|%s" %( self.json() ) )
                 return -1
 
             Logger.info(baseURL)
         else:
-            Logger.error("StatusCodeNot200:"+str(rsp.status_code))
+            Logger.error("StatusCodeNot200|%s|%s" % ( str(rsp.status_code) , url ) )
             return -1
 
         try:
@@ -99,25 +99,25 @@ class BingWallpaper(object):
             self.imgName = "BingWallpaper-%s.%s" % ( time.strftime("%Y-%m-%d",time.localtime()), imgSuffix )
             self.imgPath = "%s/%s" % ( self.imgFolder, self.imgName)
         except Exception as e:
-            Logger.error(e)
+            Logger.error("Exception|%s" % str(e) )
             return -1
 
     def setWallpaper(self):
         Logger.info("setting begin")
         
         if (not os.path.exists(self.imgPath) ) and (not self.random):
-            Logger.info("%s not exist,downloading..." % self.imgName)
+            Logger.info("FileNotExist|%s" % self.imgName)
             Downloader.get(self.imgUrl,self.imgPath)
         
-        Logger.info("de: %s, command: %s" % (self.de, self.command))
+        Logger.info("de|%s|command|%s" % (self.de, self.command))
 
         if self.de == "cinnamon":
             self.command = "gsettings set org.cinnamon.desktop.background picture-uri \"file:///%s\"" % self.imgPath
-            Logger.info("cinnamon command status:%s" % str(os.system(self.command)))
+            Logger.info("cinnamon|status|%s" % str(os.system(self.command)))
         
         elif self.de == "deepin":
             self.command = "gsettings set com.deepin.wrap.gnome.desktop.background picture-uri \"file:///%s\"" % self.imgPath
-            Logger.info("deepin command status:%s" % str(os.system(self.command)))
+            Logger.info("deepin|status|%s" % str(os.system(self.command)))
         
         elif self.de == "gnome":
             shell = '''
@@ -126,7 +126,7 @@ class BingWallpaper(object):
                 gsettings set org.gnome.desktop.background draw-background true
             '''
             self.command = shell.replace("#",self.imgPath)
-            Logger.info("gnome command status:%s" % str(os.system(self.command)))
+            Logger.info("gnome|status|%s" % str(os.system(self.command)))
         
         elif self.de == "kde":
             plasmashell = '''
@@ -137,28 +137,28 @@ class BingWallpaper(object):
                 d.writeConfig("Image","#");
             '''.replace("#",self.imgPath)
             self.command = "qdbus org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript \'#\'".replace("#",plasmashell)
-            Logger.info("kde command status:%s" % str(os.system(self.command)))
+            Logger.info("kde|status|%s" % str(os.system(self.command)))
             # if 'sh: 1: notify-send: not found' in kde , please install libnotify-bin
             # sudo apt install libnotify-bin
 
         elif self.de == "mate":
             self.command = "gsettings set org.mate.background picture-filename #".replace("#",self.imgPath)
-            Logger.info("mate command status:%s" % str(os.system(self.command)))
+            Logger.info("mate|status|%s" % str(os.system(self.command)))
             
         elif self.de == "wm":
             self.command = "feh --bg-fill %s" % self.imgPath
-            Logger.info("feh command status:%s" % str(os.system(self.command)))
+            Logger.info("feh|status|%s" % str(os.system(self.command)))
 
         elif self.de == "xfce":
             self.command = "xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitor0/workspace0/last-image -s %s" % self.imgPath
-            Logger.info("xfce command status:%s" % str(os.system(self.command)))
+            Logger.info("xfce|status|%s" % str(os.system(self.command)))
 
         elif self.command:
             command = self.command.replace("{{}}",self.imgPath)
-            Logger.info("%s command status: %s" % ( self.command, str(os.system(command)) ) )
+            Logger.info("%s|status|%s" % ( self.command, str(os.system(command)) ) )
 
         else:
-            Logger.info("not support desktop environment:%s" % str(self.de))
+            Logger.info("NotSupportDesktopEnvironment|%s" % str(self.de))
         
         if (self.de or self.command) and (not self.silent):
             self.notify()
@@ -238,13 +238,17 @@ if __name__ == '__main__':
             try:
                 rsp = requests.get(url)
             except requests.exceptions.ConnectionError:
-                Logger.error("ConnectionError")
+                Logger.error("ConnectionError|%s" % baseURL)
             else:
                 if rsp.status_code == 200:
                     ret = bw.setBaseUrl(baseURL)
                     break
+        else:
+            ret = -1
 
-    Logger.info("preparation ret:"+str(ret))
+    Logger.info("PreparationRet|%s" % str(ret))
 
-    if not ret or ret == -1:
+    if not ret or ret != -1:
         bw.setWallpaper()
+    else:
+        Logger.error("Setting Abort")
