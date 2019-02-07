@@ -57,32 +57,49 @@ class Downloader(object):
 class BingWallpaper(object):
 
     def __init__(self,de="",command=""):
-        path = "/HPImageArchive.aspx?format=js&idx=0&n=1"
-        baseUrls = ["https://www.bing.com",
-                   "https://www2.bing.com",
-                   "https://www4.bing.com",
-                   "https://cn.bing.com" ]
-        for baseUrl in baseUrls:
-            url = "%s/%s" % ( baseUrl, path )
-            rsp = requests.get(url)
-            if rsp.status_code == 200:
-                self.json = rsp.json()
-                self.bingDomain = baseUrl
-                Logger.info(baseUrl)
-                break
-
-        imgLocation = self.json['images'][0]['url']
-        self.imgUrl = "%s%s" % ( self.bingDomain, imgLocation )
-        lastIndex = imgLocation.rfind(".")
-        imgSuffix = imgLocation[lastIndex+1:]
-        self.imgName = "BingWallpaper-%s.%s" % ( time.strftime("%Y-%m-%d",time.localtime()), imgSuffix )
-        self.imgFolder = "%s/BingWallpaper" % os.path.expanduser('~')
-        self.imgPath = "%s/%s" % ( self.imgFolder, self.imgName)
-        self.notifyIconPath = "/usr/share/icons/hicolor/64x64/apps/OneClickBingWallpaper.png"
 
         self.de = de
         self.command = command
         self.random = False
+        self.path = "/HPImageArchive.aspx?format=js&idx=0&n=1"
+        self.json = dict()
+        self.imgFolder = "%s/BingWallpaper" % os.path.expanduser('~')
+        self.notifyIconPath = "/usr/share/icons/hicolor/64x64/apps/OneClickBingWallpaper.png"
+    
+    def setBaseUrl(self,baseURL):
+        url = "%s%s" % ( baseURL, self.path )
+        Logger.info(url)
+        try:
+            rsp = requests.get(url)
+        except requests.exceptions.InvalidURL:
+            Logger.error("InvaildURL")
+            return -1
+        except requests.exceptions.ConnectionError:
+            Logger.error("ConnectionError")
+            return -1
+        
+        if rsp.status_code == 200:
+            try:
+                self.json = rsp.json() # This *call* raises an exception if JSON decoding fails
+            except ValueError:
+                Logger.error("ValueError")
+                return -1
+
+            Logger.info(baseURL)
+        else:
+            Logger.error("StatusCodeNot200:"+str(rsp.status_code))
+            return -1
+
+        try:
+            imgLocation = self.json['images'][0]['url']
+            self.imgUrl = "%s%s" % ( baseURL, imgLocation )
+            lastIndex = imgLocation.rfind(".")
+            imgSuffix = imgLocation[lastIndex+1:] # if lastIndex=-1, imgSuffix=imgLocation
+            self.imgName = "BingWallpaper-%s.%s" % ( time.strftime("%Y-%m-%d",time.localtime()), imgSuffix )
+            self.imgPath = "%s/%s" % ( self.imgFolder, self.imgName)
+        except Exception as e:
+            Logger.error(e)
+            return -1
 
     def setWallpaper(self):
         Logger.info("setting begin")
@@ -149,15 +166,18 @@ class BingWallpaper(object):
     def notify(self):
         content = ""
         if not self.random:
-            content = self.json['images'][0]['copyright']
-            lastIndex = content.rfind("(")
-            content = content[:lastIndex]
+            try:
+                content = self.json['images'][0]['copyright']
+                lastIndex = content.rfind("(")
+                content = content[:lastIndex]
+            except Exception:
+                pass
         else:
             content = self.imgName
         if os.path.exists(self.notifyIconPath):
             options = "--icon=%s" % self.notifyIconPath
         shell = "notify-send %s:%s %s" % ( time.strftime("%Y-%m-%d",time.localtime()), content, options)
-        print(shell)
+        Logger.info(shell)
         os.system(shell)
     
     def detect(self):
@@ -188,11 +208,36 @@ if __name__ == '__main__':
     parser.add_argument("--random",help="random pick image from default folder to set wallpaper",action="store_true")
     parser.add_argument("-d",help="desktop environment: xfce etc")
     parser.add_argument("-c",help="command in your device to set desktop background,{{}} will be replaced with the true images path(not end with \)")
+    parser.add_argument("-baseurl",help="[ignore if --random is true] alternative subdomain for bing.com, for example, -baseurl www2.bing.com. "
+                                        "must begin with https:// or http://")
     args = parser.parse_args()
 
     bw = BingWallpaper(args.d,args.c)
+
     if args.auto:
-        bw.detect()
+        ret = bw.detect()
     if args.random:
-        bw.randomImage()
-    bw.setWallpaper()
+        ret = bw.randomImage()
+    elif args.baseurl:
+        ret = bw.setBaseUrl(args.baseurl)
+    else:
+        path = "/HPImageArchive.aspx?format=js&idx=0&n=1"
+        baseURLs = ["https://www.bing.com",
+                   "https://www2.bing.com",
+                   "https://www4.bing.com",
+                   "https://cn.bing.com" ]
+        for baseURL in baseURLs:
+            url = "%s%s" % ( baseURL, path )
+            try:
+                rsp = requests.get(url)
+            except requests.exceptions.ConnectionError:
+                Logger.error("ConnectionError")
+            else:
+                if rsp.status_code == 200:
+                    ret = bw.setBaseUrl(baseURL)
+                    break
+
+    Logger.info("preparation ret:"+str(ret))
+
+    if not ret or ret == -1:
+        bw.setWallpaper()
