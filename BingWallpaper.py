@@ -64,6 +64,7 @@ class BingWallpaper(object):
         self.path = "/HPImageArchive.aspx?format=js&idx=0&n=1"
         self.json = dict()
         self.imgFolder = "%s/BingWallpaper" % os.path.expanduser('~')
+        self.silent = False
         self.notifyIconPath = "/usr/share/icons/hicolor/64x64/apps/OneClickBingWallpaper.png"
     
     def setBaseUrl(self,baseURL):
@@ -159,7 +160,7 @@ class BingWallpaper(object):
         else:
             Logger.info("not support desktop environment:%s" % str(self.de))
         
-        if self.de or self.command:
+        if (self.de or self.command) and (not self.silent):
             self.notify()
         Logger.info("setting finish")
 
@@ -195,17 +196,21 @@ class BingWallpaper(object):
                 self.de = keywords[key]
                 break
 
-    def randomImage(self):
+    def setRandomImage(self):
         self.random = True
         files = [item for item in os.listdir(self.imgFolder) if imghdr.what("%s/%s" % (self.imgFolder, item))]
         self.imgName = files[random.randint(0,len(files))]
         self.imgPath = "%s/%s" % (self.imgFolder, self.imgName)
+    
+    def setSilent(self):
+        self.silent = True
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--auto",help="auto detect desktop environment(Beta)",action="store_true")
     parser.add_argument("--random",help="random pick image from default folder to set wallpaper",action="store_true")
+    parser.add_argument("--silent",help="do not send notify after finish setting",action="store_true")
     parser.add_argument("-d",help="desktop environment: xfce etc")
     parser.add_argument("-c",help="command in your device to set desktop background,{{}} will be replaced with the true images path(not end with \)")
     parser.add_argument("-baseurl",help="[ignore if --random is true] alternative subdomain for bing.com, for example, -baseurl www2.bing.com. "
@@ -216,8 +221,10 @@ if __name__ == '__main__':
 
     if args.auto:
         ret = bw.detect()
+    if args.silent:
+        ret = bw.setSilent()
     if args.random:
-        ret = bw.randomImage()
+        ret = bw.setRandomImage()
     elif args.baseurl:
         ret = bw.setBaseUrl(args.baseurl)
     else:
