@@ -18,6 +18,7 @@ DWIDGET_USE_NAMESPACE
 #include <QStandardPaths>
 #include <QDesktopServices>
 #include <QUrl>
+#include <QTextBrowser>
 
 #include <DAboutDialog>
 
@@ -305,7 +306,21 @@ void OneClickBingWallpaper::updateWallpaper(QString argument)
         }
 
         qDebug() << command << endl;
+
         process->start(command);
+        process->waitForFinished();
+
+        QByteArray error_byte = process->readAllStandardError();
+        QString error = error_byte;
+        
+        if(!error.isEmpty())
+        {
+            QTextBrowser * text = new QTextBrowser();
+            text->setWindowTitle("Error");
+            text->setText(error);
+            text->show();
+        }
+        qDebug() << error << endl;
     }
 }
 
