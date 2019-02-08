@@ -8,7 +8,7 @@
 class OneClickBingWallpaperConfig
 {
 public:
-    static QString pyFileMD5;
+    static QString pyFileMD5;       // Please run ./config.sh first to generate/update pyFileMD5
     static QString pyFilePath;
     static QString i18nFilePathPrefix;
     static void updateLanguagesSetting(QSettings &settings)
