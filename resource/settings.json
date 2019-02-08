@@ -22,8 +22,9 @@
                     "options": [
                         {
                             "key": "enable",
-                            "name": "Send Notification",
+                            "name": "",
                             "type": "checkbox",
+                            "text":"Send Notification",
                             "default": "true"
                         }
                     ]
