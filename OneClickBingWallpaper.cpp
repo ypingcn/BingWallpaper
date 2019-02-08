@@ -316,8 +316,14 @@ void OneClickBingWallpaper::updateWallpaper(QString argument)
         if(!error.isEmpty())
         {
             QTextBrowser * text = new QTextBrowser();
-            text->setWindowTitle("Error");
-            text->setText(error);
+            text->resize(400,300);
+            text->setWindowTitle(tr("Error"));
+            text->append("------------------------------------------------------");
+            text->append(tr("Something wrong "));
+            text->append(tr("Please check/adjust your setting or network connection, "
+                            "or just report this issue to maintainer with the following log."));
+            text->append("------------------------------------------------------");
+            text->append(error);
             text->show();
         }
         qDebug() << error << endl;
