@@ -199,7 +199,7 @@ class BingWallpaper(object):
     def setRandomImage(self):
         self.random = True
         files = [item for item in os.listdir(self.imgFolder) if imghdr.what("%s/%s" % (self.imgFolder, item))]
-        self.imgName = files[random.randint(0,len(files))]
+        self.imgName = files[random.randint(0,len(files)-1)]
         self.imgPath = "%s/%s" % (self.imgFolder, self.imgName)
     
     def setSilent(self):
