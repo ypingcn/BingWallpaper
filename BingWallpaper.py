@@ -86,7 +86,6 @@ class BingWallpaper(object):
 
     def setWallpaper(self):
         Logger.info("setting begin")
-        
         if (not os.path.exists(self.imgPath) ) and (not self.random):
             Logger.info("%s not exist,downloading..." % self.imgName)
             Downloader.get(self.imgUrl,self.imgPath)
@@ -98,7 +97,10 @@ class BingWallpaper(object):
             Logger.info("cinnamon command status:%s" % str(os.system(self.command)))
         
         elif self.de == "deepin":
+            check_env = os.getenv("GIO_EXTRA_MODULES")
             self.command = "gsettings set com.deepin.wrap.gnome.desktop.background picture-uri \"file:///%s\"" % self.imgPath
+            if not check_env:
+                self.command = "GIO_EXTRA_MODULES=/usr/lib/x86_64-linux-gnu/gio/modules/ " + self.command
             Logger.info("deepin command status:%s" % str(os.system(self.command)))
         
         elif self.de == "gnome":
