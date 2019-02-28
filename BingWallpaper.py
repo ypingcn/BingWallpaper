@@ -86,6 +86,7 @@ class BingWallpaper(object):
 
     def setWallpaper(self):
         Logger.info("setting begin")
+        
         if (not os.path.exists(self.imgPath) ) and (not self.random):
             Logger.info("%s not exist,downloading..." % self.imgName)
             Downloader.get(self.imgUrl,self.imgPath)
@@ -100,6 +101,7 @@ class BingWallpaper(object):
             check_env = os.getenv("GIO_EXTRA_MODULES")
             self.command = "gsettings set com.deepin.wrap.gnome.desktop.background picture-uri \"file:///%s\"" % self.imgPath
             if not check_env:
+                Logger.info("no GIO_EXTRA_MODULES environment")
                 self.command = "GIO_EXTRA_MODULES=/usr/lib/x86_64-linux-gnu/gio/modules/ " + self.command
             Logger.info("deepin command status:%s" % str(os.system(self.command)))
         
@@ -158,8 +160,8 @@ class BingWallpaper(object):
             content = self.imgName
         if os.path.exists(self.notifyIconPath):
             options = "--icon=%s" % self.notifyIconPath
-        shell = "notify-send %s:%s %s" % ( time.strftime("%Y-%m-%d",time.localtime()), content, options)
-        print(shell)
+        shell = "notify-send \"%s:%s\" %s" % (time.strftime("%Y-%m-%d",time.localtime()), content, options)
+        Logger.info("execute notify-send\n%s" % shell)
         os.system(shell)
     
     def detect(self):
