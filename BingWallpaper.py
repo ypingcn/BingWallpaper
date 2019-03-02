@@ -117,6 +117,11 @@ class BingWallpaper(object):
         
         elif self.de == "deepin":
             self.command = "gsettings set com.deepin.wrap.gnome.desktop.background picture-uri \"file:///%s\"" % self.imgPath
+            # set GIO_EXTRA_MODULES env to fix `gsettings your settings will not be saved or shared with other applications`t
+            check_env = os.getenv("GIO_EXTRA_MODULES")
+            if not check_env:
+                Logger.info("no GIO_EXTRA_MODULES environment")
+                self.command = "GIO_EXTRA_MODULES=/usr/lib/x86_64-linux-gnu/gio/modules/ " + self.command
             Logger.info("deepin|status|%s" % str(os.system(self.command)))
         
         elif self.de == "gnome":
@@ -177,7 +182,7 @@ class BingWallpaper(object):
             content = self.imgName
         if os.path.exists(self.notifyIconPath):
             options = "--icon=%s" % self.notifyIconPath
-        shell = "notify-send %s:%s %s" % ( time.strftime("%Y-%m-%d",time.localtime()), content, options)
+        shell = "notify-send \"%s:%s\" %s" % (time.strftime("%Y-%m-%d",time.localtime()), content, options)
         Logger.info(shell)
         os.system(shell)
     
