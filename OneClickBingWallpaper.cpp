@@ -18,6 +18,7 @@ DWIDGET_USE_NAMESPACE
 #include <QStandardPaths>
 #include <QDesktopServices>
 #include <QUrl>
+#include <QTextBrowser>
 
 #include <DAboutDialog>
 
@@ -160,6 +161,12 @@ void OneClickBingWallpaper::initSettingOptions()
     updateTypeOptions.insert("keys", QStringList() << "lastest" << "random" );
     updateTypeOptions.insert("values", QStringList() << tr("Lastest") << tr("Random") );
     updateType->setData("items",updateTypeOptions);
+
+    auto subdomainType = dsettings->option("base.domain.subdomain");
+    QMap<QString, QVariant> subdomainTypeOptions;
+    subdomainTypeOptions.insert("keys", QStringList() << "auto" << "https://www.bing.com" << "https://cn.bing.com" << "https://www2.bing.com" << "https://www4.bing.com" );
+    subdomainTypeOptions.insert("values", QStringList() << tr("Auto") << "https://www.bing.com" << "https://cn.bing.com" << "https://www2.bing.com" << "https://www4.bing.com" );
+    subdomainType->setData("items",subdomainTypeOptions);
 }
 
 void OneClickBingWallpaper::initOther()
@@ -223,6 +230,8 @@ void OneClickBingWallpaper::updateWallpaper(QString argument)
     bool pyFileVaild = true;
     auto pythonCheck = dsettings->option("base.security.python-check");
     auto isRandom = dsettings->option("base.update.type");
+    auto isNotifyEnable = dsettings->option("base.notification.enable");
+    auto subDomain = dsettings->option("base.domain.subdomain");
     QDir dir(imagePath);
 
     if (!dir.exists())
@@ -287,8 +296,37 @@ void OneClickBingWallpaper::updateWallpaper(QString argument)
         {
             command += " --random";
         }
+        if(!isNotifyEnable->value().toBool())
+        {
+            command += " --silent";
+        }
+        if(subDomain->value().toString() != "auto")
+        {
+            command += " -baseurl " + subDomain->value().toString();
+        }
+
         qDebug() << command << endl;
+
         process->start(command);
+        process->waitForFinished();
+
+        QByteArray error_byte = process->readAllStandardError();
+        QString error = error_byte;
+        
+        if(!error.isEmpty())
+        {
+            QTextBrowser * text = new QTextBrowser();
+            text->resize(400,300);
+            text->setWindowTitle(tr("Error"));
+            text->append("------------------------------------------------------");
+            text->append(tr("Something wrong "));
+            text->append(tr("Please check/adjust your setting or network connection, "
+                            "or just report this issue to maintainer with the following log."));
+            text->append("------------------------------------------------------");
+            text->append(error);
+            text->show();
+        }
+        qDebug() << error << endl;
     }
 }
 

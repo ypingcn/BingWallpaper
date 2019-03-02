@@ -17,6 +17,31 @@
                     ]
                 },
                 {
+                    "key": "notification",
+                    "name": "Notification",
+                    "options": [
+                        {
+                            "key": "enable",
+                            "name": "",
+                            "type": "checkbox",
+                            "text":"Send Notification",
+                            "default": "true"
+                        }
+                    ]
+                },
+                {
+                    "key": "domain",
+                    "name": "Domain",
+                    "options": [
+                        {
+                            "key": "subdomain",
+                            "name": "Subdomain for bing.com",
+                            "type": "combobox",
+                            "default": "auto"
+                        }
+                    ]
+                },
+                {
                     "key": "autoupdate",
                     "name": "Auto Update",
                     "options": [
