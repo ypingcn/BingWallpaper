@@ -58,7 +58,7 @@ class BingWallpaper(object):
 
     def __init__(self,de="",command=""):
 
-        self.de = de
+        self.de = de.lower()
         self.command = command
         self.random = False
         self.path = "/HPImageArchive.aspx?format=js&idx=0&n=1"
