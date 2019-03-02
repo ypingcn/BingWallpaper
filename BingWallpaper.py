@@ -98,6 +98,7 @@ class BingWallpaper(object):
             Logger.info("cinnamon command status:%s" % str(os.system(self.command)))
         
         elif self.de == "deepin":
+            # set GIO_EXTRA_MODULES env to fix `gsettings your settings will not be saved or shared with other applications`t
             check_env = os.getenv("GIO_EXTRA_MODULES")
             self.command = "gsettings set com.deepin.wrap.gnome.desktop.background picture-uri \"file:///%s\"" % self.imgPath
             if not check_env:
