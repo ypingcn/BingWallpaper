@@ -58,7 +58,7 @@ class BingWallpaper(object):
 
     def __init__(self,de="",command=""):
 
-        self.de = de.lower()
+        self.de = de
         self.command = command
         self.random = False
         self.path = "/HPImageArchive.aspx?format=js&idx=0&n=1"
@@ -110,6 +110,9 @@ class BingWallpaper(object):
             Downloader.get(self.imgUrl,self.imgPath)
         
         Logger.info("de|%s|command|%s" % (self.de, self.command))
+
+        if self.de:
+            self.de = self.de.lower()
 
         if self.de == "cinnamon":
             self.command = "gsettings set org.cinnamon.desktop.background picture-uri \"file:///%s\"" % self.imgPath
