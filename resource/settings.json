@@ -13,6 +13,12 @@
                             "name": "Type",
                             "type": "combobox",
                             "default": "lastest"
+                        },
+                        {
+                            "key": "desktop",
+                            "name": "Desktop Environment",
+                            "type": "combobox",
+                            "default": "--auto"
                         }
                     ]
                 },

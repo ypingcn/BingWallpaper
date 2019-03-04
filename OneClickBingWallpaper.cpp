@@ -40,7 +40,8 @@ OneClickBingWallpaper::OneClickBingWallpaper(QWidget *parent)
 
     timer = new QTimer(this);
     connect(timer, &QTimer::timeout, [this]() {
-        updateWallpaper("--auto");
+        auto desktopType = dsettings->option("base.update.desktop");
+        updateWallpaper(desktopType->value().toString());
     });
     auto interval = dsettings->option("base.autoupdate.interval");
     if(interval->value().toInt() != -1)
@@ -134,7 +135,8 @@ void OneClickBingWallpaper::initConnect()
     connect(dsettings,SIGNAL(valueChanged(QString,QVariant)),this,SLOT(settingsValueChanged(QString,QVariant)));
 
     connect(updateAction, &QAction::triggered, [this](){
-        updateWallpaper("--auto");
+        auto desktopType = dsettings->option("base.update.desktop");
+        updateWallpaper(desktopType->value().toString());
     });
 
     connect(settingAction,SIGNAL(triggered()),this,SLOT(showSettingWidget()));
@@ -167,14 +169,21 @@ void OneClickBingWallpaper::initSettingOptions()
     subdomainTypeOptions.insert("keys", QStringList() << "auto" << "https://www.bing.com" << "https://cn.bing.com" << "https://www2.bing.com" << "https://www4.bing.com" );
     subdomainTypeOptions.insert("values", QStringList() << tr("Auto") << "https://www.bing.com" << "https://cn.bing.com" << "https://www2.bing.com" << "https://www4.bing.com" );
     subdomainType->setData("items",subdomainTypeOptions);
+
+    auto desktopType = dsettings->option("base.update.desktop");
+    QMap<QString, QVariant> desktopTypeOptions;
+    desktopTypeOptions.insert("keys", QStringList() << "--auto" << "-d cinnamon" << "-d deepin" << "-d gnome" << "-d kde" << "-d mate" << "-d wm" << "-d xfce" );
+    desktopTypeOptions.insert("values", QStringList() << tr("Auto") << "Cinnamon" << "Deepin" << "Gnome" << "KDE" << "Mate" << "WM" << "Xfce");
+    desktopType->setData("items", desktopTypeOptions);
 }
 
 void OneClickBingWallpaper::initOther()
 {
     auto startupEnable = dsettings->option("base.autoupdate.startup-enable");
+    auto desktopType = dsettings->option("base.update.desktop");
     if( startupEnable->value().toBool() )
     {
-        updateWallpaper("--auto");
+        updateWallpaper(desktopType->value().toString());
     }
 }
 
