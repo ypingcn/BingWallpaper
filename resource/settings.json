@@ -13,6 +13,37 @@
                             "name": "Type",
                             "type": "combobox",
                             "default": "lastest"
+                        },
+                        {
+                            "key": "desktop",
+                            "name": "Desktop Environment",
+                            "type": "combobox",
+                            "default": "--auto"
+                        }
+                    ]
+                },
+                {
+                    "key": "notification",
+                    "name": "Notification",
+                    "options": [
+                        {
+                            "key": "enable",
+                            "name": "",
+                            "type": "checkbox",
+                            "text":"Send Notification",
+                            "default": "true"
+                        }
+                    ]
+                },
+                {
+                    "key": "domain",
+                    "name": "Domain",
+                    "options": [
+                        {
+                            "key": "subdomain",
+                            "name": "Subdomain for bing.com",
+                            "type": "combobox",
+                            "default": "auto"
                         }
                     ]
                 },
@@ -44,6 +75,19 @@
                             "name": "",
                             "type": "checkbox",
                             "text": "Check setting Python file's MD5",
+                            "default": "true"
+                        }
+                    ]
+                },
+                {
+                    "key": "other",
+                    "name": "Other",
+                    "options": [
+                        {
+                            "key": "language-update-hint",
+                            "name": "",
+                            "type": "checkbox",
+                            "text": "Show hint of restart for updating language",
                             "default": "true"
                         }
                     ]

@@ -18,6 +18,7 @@ DWIDGET_USE_NAMESPACE
 #include <QStandardPaths>
 #include <QDesktopServices>
 #include <QUrl>
+#include <QTextBrowser>
 
 #include <DAboutDialog>
 
@@ -39,7 +40,8 @@ OneClickBingWallpaper::OneClickBingWallpaper(QWidget *parent)
 
     timer = new QTimer(this);
     connect(timer, &QTimer::timeout, [this]() {
-        updateWallpaper("--auto");
+        auto desktopType = dsettings->option("base.update.desktop");
+        updateWallpaper(desktopType->value().toString());
     });
     auto interval = dsettings->option("base.autoupdate.interval");
     if(interval->value().toInt() != -1)
@@ -133,7 +135,8 @@ void OneClickBingWallpaper::initConnect()
     connect(dsettings,SIGNAL(valueChanged(QString,QVariant)),this,SLOT(settingsValueChanged(QString,QVariant)));
 
     connect(updateAction, &QAction::triggered, [this](){
-        updateWallpaper("--auto");
+        auto desktopType = dsettings->option("base.update.desktop");
+        updateWallpaper(desktopType->value().toString());
     });
 
     connect(settingAction,SIGNAL(triggered()),this,SLOT(showSettingWidget()));
@@ -160,14 +163,27 @@ void OneClickBingWallpaper::initSettingOptions()
     updateTypeOptions.insert("keys", QStringList() << "lastest" << "random" );
     updateTypeOptions.insert("values", QStringList() << tr("Lastest") << tr("Random") );
     updateType->setData("items",updateTypeOptions);
+
+    auto subdomainType = dsettings->option("base.domain.subdomain");
+    QMap<QString, QVariant> subdomainTypeOptions;
+    subdomainTypeOptions.insert("keys", QStringList() << "auto" << "https://www.bing.com" << "https://cn.bing.com" << "https://www2.bing.com" << "https://www4.bing.com" );
+    subdomainTypeOptions.insert("values", QStringList() << tr("Auto") << "https://www.bing.com" << "https://cn.bing.com" << "https://www2.bing.com" << "https://www4.bing.com" );
+    subdomainType->setData("items",subdomainTypeOptions);
+
+    auto desktopType = dsettings->option("base.update.desktop");
+    QMap<QString, QVariant> desktopTypeOptions;
+    desktopTypeOptions.insert("keys", QStringList() << "--auto" << "-d cinnamon" << "-d deepin" << "-d gnome" << "-d kde" << "-d mate" << "-d wm" << "-d xfce" );
+    desktopTypeOptions.insert("values", QStringList() << tr("Auto") << "Cinnamon" << "Deepin" << "Gnome" << "KDE" << "Mate" << "WM" << "Xfce");
+    desktopType->setData("items", desktopTypeOptions);
 }
 
 void OneClickBingWallpaper::initOther()
 {
     auto startupEnable = dsettings->option("base.autoupdate.startup-enable");
+    auto desktopType = dsettings->option("base.update.desktop");
     if( startupEnable->value().toBool() )
     {
-        updateWallpaper("--auto");
+        updateWallpaper(desktopType->value().toString());
     }
 }
 
@@ -223,6 +239,8 @@ void OneClickBingWallpaper::updateWallpaper(QString argument)
     bool pyFileVaild = true;
     auto pythonCheck = dsettings->option("base.security.python-check");
     auto isRandom = dsettings->option("base.update.type");
+    auto isNotifyEnable = dsettings->option("base.notification.enable");
+    auto subDomain = dsettings->option("base.domain.subdomain");
     QDir dir(imagePath);
 
     if (!dir.exists())
@@ -287,8 +305,37 @@ void OneClickBingWallpaper::updateWallpaper(QString argument)
         {
             command += " --random";
         }
+        if(!isNotifyEnable->value().toBool())
+        {
+            command += " --silent";
+        }
+        if(subDomain->value().toString() != "auto")
+        {
+            command += " -baseurl " + subDomain->value().toString();
+        }
+
         qDebug() << command << endl;
+
         process->start(command);
+        process->waitForFinished();
+
+        QByteArray error_byte = process->readAllStandardError();
+        QString error = error_byte;
+        
+        if(!error.isEmpty())
+        {
+            QTextBrowser * text = new QTextBrowser();
+            text->resize(400,300);
+            text->setWindowTitle(tr("Error"));
+            text->append("------------------------------------------------------");
+            text->append(tr("Something wrong "));
+            text->append(tr("Please check/adjust your setting or network connection, "
+                            "or just report this issue to maintainer with the following log."));
+            text->append("------------------------------------------------------");
+            text->append(error);
+            text->show();
+        }
+        qDebug() << error << endl;
     }
 }
 
@@ -300,6 +347,14 @@ void OneClickBingWallpaper::updateLanguage(QString value)
     qDebug() << settings.value("lang") << endl;
     settings.setValue("lang",value);
     qDebug() << settings.value("lang") << endl;
+
+    auto hint = dsettings->option("base.other.language-update-hint");
+    if(hint->value().toBool())
+    {
+        QMessageBox::information(nullptr, tr("Restart required"), 
+                                tr("Language update require restart. if update fail, please quit and restart manually"), 
+                                QMessageBox::Ok);
+    }
 
     app->quit();
     QProcess::startDetached(app->arguments()[0]);
