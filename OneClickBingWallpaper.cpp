@@ -348,6 +348,14 @@ void OneClickBingWallpaper::updateLanguage(QString value)
     settings.setValue("lang",value);
     qDebug() << settings.value("lang") << endl;
 
+    auto hint = dsettings->option("base.other.language-update-hint");
+    if(hint->value().toBool())
+    {
+        QMessageBox::information(nullptr, tr("Restart required"), 
+                                tr("Language update require restart. if update fail, please quit and restart manually"), 
+                                QMessageBox::Ok);
+    }
+
     app->quit();
     QProcess::startDetached(app->arguments()[0]);
 }

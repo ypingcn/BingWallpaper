@@ -78,6 +78,19 @@
                             "default": "true"
                         }
                     ]
+                },
+                {
+                    "key": "other",
+                    "name": "Other",
+                    "options": [
+                        {
+                            "key": "language-update-hint",
+                            "name": "",
+                            "type": "checkbox",
+                            "text": "Show hint of restart for updating language",
+                            "default": "true"
+                        }
+                    ]
                 }
             ]
         }
