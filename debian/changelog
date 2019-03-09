@@ -1,11 +1,17 @@
-oneclickbingwallpaper (0.8) unstable; urgency=low
+oneclickbingwallpaper (0.9) unstable; urgency=low
 
   * OneClickBingWallpaper
 
-  修复自动重启程序的参数错误设置
-  修复打包过程中翻译文件生成的遗漏
+  添加 bing.com 子域名的切换功能
+  添加关闭更新成功通知的选项
+  添加设置过程出错的日志窗口
+  添加桌面环境的切换功能
+  添加语言切换时提示需要重启程序的消息提示
 
-  fix: arguments for restarting program
-  fix: translation file's generation for build package
+  add: subdomain for bing.com
+  add: --silent option for result's notification
+  add: error log dialog when updating
+  add: desktop environment option in setting
+  add: hint of restart for updating language
 
- -- ypingcn <1344632698@qq.com>  Thu, 31 Jan 2019 16:00:00 +0800
+ -- ypingcn <1344632698@qq.com>  Sat, 9 Mar 2019 16:00:00 +0800
