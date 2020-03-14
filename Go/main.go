@@ -10,64 +10,40 @@ import (
 	"path"
 	"time"
 
-	notify "github.com/ypingcn/BingWallpaper/Go/notify"
-	setter "github.com/ypingcn/BingWallpaper/Go/setter"
-	util "github.com/ypingcn/BingWallpaper/Go/util"
+	"github.com/ypingcn/BingWallpaper/Go/conf"
+	"github.com/ypingcn/BingWallpaper/Go/notify"
+	"github.com/ypingcn/BingWallpaper/Go/setter"
+	"github.com/ypingcn/BingWallpaper/Go/util"
 )
 
-// BingImages ...
-type BingImages struct {
-	Startdate     string        `json:"startdate"`
-	Fullstartdate string        `json:"fullstartdate"`
-	Enddate       string        `json:"enddate"`
-	URL           string        `json:"url"`
-	URLbase       string        `json:"urlbase"`
-	Copyright     string        `json:"copyright"`
-	Copyrightlink string        `json:"copyrightlink"`
-	Title         string        `json:"title"`
-	Quiz          string        `json:"quiz"`
-	Wp            bool          `json:"wp"`
-	Hsh           string        `json:"hsh"`
-	Drk           int           `json:"drk"`
-	Top           int           `json:"top"`
-	Bot           int           `json:"bot"`
-	Hs            []interface{} `json:"hs,omitempty"`
-}
+const (
+	configFileName = "./BingWallpaper.conf"
+	imgFolderName  = "BingWallpaper"
+)
 
-// BingTooltips ...
-type BingTooltips struct {
-	Loading  string `json:"loading"`
-	Previous string `json:"previous"`
-	Next     string `json:"next"`
-	Walle    string `json:"walle"`
-	Walls    string `json:"walls"`
-}
+var optConf = flag.String("conf", configFileName, "config file path")
+var optDisableConf = flag.Bool("disable-file-conf", false, "disable all file configuration")
 
-// BingConfig ...
-type BingConfig struct {
-	Images   []*BingImages `json:"images"`
-	Tooltips *BingTooltips `json:"tooltips"`
-}
-
+var optDuration = flag.Int64("duration", 0, "update duration(seconds)")
 var optAuto = flag.Bool("auto", false, "auto detect desktop environment(Beta)")
-var optRandom = flag.Bool("random", false, "random pick image from default folder to set wallpaper")
 var optSilent = flag.Bool("silent", false, "do not send notify after finish setting")
+var optRandom = flag.Bool("random", false, "random pick image from default folder to set wallpaper")
+var optImgPath = flag.String("imgpath", path.Join(util.GetUserHomePath(), imgFolderName), "image folder for random mode")
 var optDesktop = flag.String("d", "", "desktop environment: xfce etc, Linux only")
 var optCommand = flag.String("c", "", "command in your device to set desktop background,%s will be replaced with the true images path(not end with )")
 
-func main() {
-	flag.Parse()
+func setWallpaper(config conf.UpdateWallpaperConfig) {
 
 	baseURLs := []string{"https://www.bing.com", "https://www2.bing.com", "https://www4.bing.com", "https://cn.bing.com"}
 	apiPath := "/HPImageArchive.aspx?format=js&idx=0&n=1"
 
 	downloadFinished := false
 	imgName := ""
-	imgPath := path.Join(util.GetUserHomePath(), "BingWallpaper")
+	imgPath := config.Path
 	notifyTitle := ""
 	notifyName := ""
 
-	if *optRandom {
+	if config.Random {
 		rand.Seed(time.Now().UnixNano())
 		files, err := ioutil.ReadDir(imgPath)
 		if err != nil {
@@ -85,7 +61,7 @@ func main() {
 				continue
 			}
 
-			bingConfig := &BingConfig{}
+			bingConfig := &conf.BingConfig{}
 			err = json.Unmarshal([]byte(config), bingConfig)
 			if err != nil {
 				log.Println("json unmarshal error for ", apiURL)
@@ -120,7 +96,7 @@ func main() {
 		}
 	}
 
-	localSetter, err := setter.New(*optDesktop, *optCommand)
+	localSetter, err := setter.New(config.Desktop, config.Command)
 
 	if err != nil {
 		log.Fatal(err)
@@ -129,7 +105,41 @@ func main() {
 
 	localSetter.SetWallpaper(path.Join(imgPath, imgName))
 
-	if !*optSilent {
+	if !config.Silent {
 		notify.Notify("Bingwallpaper", notifyTitle, notifyName, "")
+	}
+}
+
+func main() {
+	flag.Parse()
+
+	updateConfig := conf.UpdateWallpaperConfig{
+		AutoDetect:     *optAuto,
+		Silent:         *optSilent,
+		Random:         *optRandom,
+		UpdateDuration: *optDuration,
+		Path:           *optImgPath,
+		Desktop:        *optDesktop,
+		Command:        *optCommand,
+	}
+
+	if !*optDisableConf {
+		if err := updateConfig.ReadFromFile(*optConf); err != nil {
+			panic(err)
+		}
+	}
+
+	timer := time.NewTimer(time.Second * 0)
+	for {
+		select {
+		case <-timer.C:
+			setWallpaper(updateConfig)
+		}
+
+		if updateConfig.UpdateDuration <= 0 {
+			break
+		}
+		timer.Reset(time.Second * time.Duration(updateConfig.UpdateDuration))
+
 	}
 }
