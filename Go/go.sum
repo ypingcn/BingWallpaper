@@ -1,0 +1,6 @@
+github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d h1:VhgPp6v9qf9Agr/56bj7Y/xa04UccTW04VP0Qed4vnQ=
+github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d/go.mod h1:YUTz3bUH2ZwIWBy3CJBeOBEugqcmXREj14T+iG/4k4U=
+github.com/reujab/wallpaper v0.0.0-20200229074030-4e1aa3ff8284 h1:AXEamsrMLjIjIfOF5xIJwyNzdqcS4mJzJIM8UiL0a9o=
+github.com/reujab/wallpaper v0.0.0-20200229074030-4e1aa3ff8284/go.mod h1:Xb+5YBsfhPxSJOGF7b4UTZIOxRIg0Lh/FnRJQm5GPJY=
+gopkg.in/toast.v1 v1.0.0-20180812000517-0a84660828b2 h1:MZF6J7CV6s/h0HBkfqebrYfKCVEo5iN+wzE4QhV3Evo=
+gopkg.in/toast.v1 v1.0.0-20180812000517-0a84660828b2/go.mod h1:s1Sn2yZos05Qfs7NKt867Xe18emOmtsO3eAKbDaon0o=
