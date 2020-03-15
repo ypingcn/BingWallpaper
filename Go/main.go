@@ -5,10 +5,12 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"math/rand"
+	"os"
 	"path"
 	"time"
+
+	logrus "github.com/sirupsen/logrus"
 
 	"github.com/ypingcn/BingWallpaper/Go/conf"
 	"github.com/ypingcn/BingWallpaper/Go/notify"
@@ -18,6 +20,7 @@ import (
 
 const (
 	configFileName = "./BingWallpaper.conf"
+	logFileName    = "./BingWallpaper.log"
 	imgFolderName  = "BingWallpaper"
 )
 
@@ -32,7 +35,25 @@ var optImgPath = flag.String("imgpath", path.Join(util.GetUserHomePath(), imgFol
 var optDesktop = flag.String("d", "", "desktop environment: xfce etc, Linux only")
 var optCommand = flag.String("c", "", "command in your device to set desktop background,%s will be replaced with the true images path(not end with )")
 
+var log = logrus.New()
+
+func init() {
+	logrus.SetLevel(logrus.InfoLevel)
+	log.Out = os.Stdout
+	file, err := os.OpenFile(logFileName, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	if err != nil {
+		log.Info("Failed to log to file, using default stderr.", err)
+	} else {
+		log.Out = file
+	}
+}
+
 func setWallpaper(config conf.UpdateWallpaperConfig) {
+	log.Info("setWallpaper begin")
+
+	defer func() {
+		log.Info("setWallpaper end")
+	}()
 
 	baseURLs := []string{"https://www.bing.com", "https://www2.bing.com", "https://www4.bing.com", "https://cn.bing.com"}
 	apiPath := "/HPImageArchive.aspx?format=js&idx=0&n=1"
