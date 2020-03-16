@@ -52,7 +52,7 @@ type UpdateWallpaperConfig struct {
 }
 
 // ReadFromFile for UpdateWallpaperConfig
-func (config UpdateWallpaperConfig) ReadFromFile(path string) error {
+func (config *UpdateWallpaperConfig) ReadFromFile(path string) error {
 	configFile, err := os.Open(path)
 	if err != nil {
 		return err
