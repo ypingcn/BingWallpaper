@@ -285,7 +285,7 @@ void OneClickBingWallpaper::updateWallpaper(QString argument)
             hash.addData(&pyFile);
             QString md5 = hash.result().toHex();
             qDebug() << OneClickBingWallpaperConfig::pyFilePath << md5;
-            if (md5 != OneClickBingWallpaperConfig::pyFileMD5)
+            if (OneClickBingWallpaperConfig::pyFileMD5 != "{{MD5SUM}}" && md5 != OneClickBingWallpaperConfig::pyFileMD5)
             {
                 QMessageBox::StandardButton choice;
                 choice = QMessageBox::information(nullptr, tr("Python File Have Modified"), 
