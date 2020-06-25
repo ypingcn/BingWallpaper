@@ -160,8 +160,8 @@ void OneClickBingWallpaper::initSettingOptions()
 
     auto updateType = dsettings->option("base.update.type");
     QMap<QString, QVariant> updateTypeOptions;
-    updateTypeOptions.insert("keys", QStringList() << "lastest" << "random" );
-    updateTypeOptions.insert("values", QStringList() << tr("Lastest") << tr("Random") );
+    updateTypeOptions.insert("keys", QStringList() << "latest" << "random" );
+    updateTypeOptions.insert("values", QStringList() << tr("Latest") << tr("Random") );
     updateType->setData("items",updateTypeOptions);
 
     auto subdomainType = dsettings->option("base.domain.subdomain");
@@ -179,9 +179,9 @@ void OneClickBingWallpaper::initSettingOptions()
 
 void OneClickBingWallpaper::initOther()
 {
-    auto startupEnable = dsettings->option("base.autoupdate.startup-enable");
+    auto startupEnable = dsettings->option("base.autoupdate.interval");
     auto desktopType = dsettings->option("base.update.desktop");
-    if( startupEnable->value().toBool() )
+    if( startupEnable->value().toInt() != -1 )
     {
         updateWallpaper(desktopType->value().toString());
     }
@@ -202,6 +202,39 @@ void OneClickBingWallpaper::trayIconActivated(QSystemTrayIcon::ActivationReason 
 void OneClickBingWallpaper::settingsValueChanged(const QString &key, const QVariant &value)
 {
     qDebug() << "settingsValueChanged " << key << " " << value << endl;
+    if(key == "base.file.image-folder")
+    {
+        QString newImagePath = QString("%1/%2").arg(
+            QStandardPaths::standardLocations(QStandardPaths::HomeLocation).first(),
+            value.toString());
+        QDir dir(newImagePath);
+        qDebug() << "newImagePath" << newImagePath << endl;
+        bool bUpdate = true;
+        if(!dir.exists())
+        {
+            QMessageBox::information(nullptr, tr("Folder not found"),
+                                     tr("BingWallpaper folder %1 in home is not exist, tool will create it by default").arg(newImagePath),
+                                     QMessageBox::Ok);
+            bool bUpdate = dir.mkdir(newImagePath);
+            qDebug() << "create folder " << newImagePath << ":" << bUpdate << endl;
+            if(!bUpdate)
+            {
+                QMessageBox::information(nullptr, tr("Failed to create folder"),
+                                     tr("Failed to create folder %1 , you need to create folder manually. use %2 instead.").arg(newImagePath, imagePath),
+                                     QMessageBox::Ok);
+            }
+        }
+        if (bUpdate)
+        {
+            imagePath = newImagePath;
+        }
+        else
+        {
+            auto option = dsettings->option("base.file.image-folder");
+            option->setValue(QVariant(imagePath));
+        }
+        
+    }
     if(key == "base.update.type" && value.toString() == "random")
     {
         QDir dir(imagePath);
@@ -225,11 +258,26 @@ void OneClickBingWallpaper::settingsValueChanged(const QString &key, const QVari
     }
     if(key == "base.autoupdate.interval")
     {
+        auto isRandom = dsettings->option("base.update.type");
+        if(isRandom->value().toString() == "latest" and value.toInt() != -1 ) 
+        {
+            QMessageBox::information(nullptr, tr("Attention! Program works in latest mode"),
+                                     tr("Interval with latest mode means the same image will be setted in one day."), QMessageBox::Ok);
+        }
+
         timer->stop();
         if(value.toInt() != -1 )
         {
             timer->setInterval(value.toInt() * 60 * 1000);
             timer->start();
+        }
+    }
+    if(key == "base.security.python-check")
+    {
+        if(OneClickBingWallpaperConfig::pyFileMD5 == "{{MD5SUM}}")
+        {
+            QMessageBox::information(nullptr, tr("Attention! Program will skipped md5 check"),
+                                     tr("Your program distributor has disabled md5 checking features.This option will be ignored"), QMessageBox::Ok);
         }
     }
 }
@@ -239,6 +287,7 @@ void OneClickBingWallpaper::updateWallpaper(QString argument)
     bool pyFileVaild = true;
     auto pythonCheck = dsettings->option("base.security.python-check");
     auto isRandom = dsettings->option("base.update.type");
+    auto imageFolder = dsettings->option("base.file.image-folder");
     auto isNotifyEnable = dsettings->option("base.notification.enable");
     auto subDomain = dsettings->option("base.domain.subdomain");
     QDir dir(imagePath);
@@ -246,7 +295,7 @@ void OneClickBingWallpaper::updateWallpaper(QString argument)
     if (!dir.exists())
     {
         QMessageBox::information(nullptr, tr("Folder Not Found"),
-                                 tr("BingWallpaper folder %1 in home is not exist, tool will create it by default").arg(imagePath),
+                                 tr("BingWallpaper folder %1 in home is not exist, program will create it by default").arg(imagePath),
                                  QMessageBox::Ok);
         bool res = dir.mkdir(imagePath);
         qDebug() << "create folder " << imagePath << ":" << res << endl;
@@ -308,6 +357,10 @@ void OneClickBingWallpaper::updateWallpaper(QString argument)
         if(!isNotifyEnable->value().toBool())
         {
             command += " --silent";
+        }
+        if(imageFolder->value().toString() != "")
+        {
+            command += " -folder " + imageFolder->value().toString();
         }
         if(subDomain->value().toString() != "auto")
         {

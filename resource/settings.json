@@ -5,6 +5,18 @@
             "name": "Basic",
             "groups": [
                 {
+                    "key":"file",
+                    "name":"file",
+                    "options":[
+                        {
+                            "key": "image-folder",
+                            "name": "Image Folder",
+                            "type": "lineedit",
+                            "default": "BingWallpaper/"
+                        }
+                    ]
+                },
+                {
                     "key": "update",
                     "name": "Update",
                     "options": [
@@ -12,7 +24,7 @@
                             "key": "type",
                             "name": "Type",
                             "type": "combobox",
-                            "default": "lastest"
+                            "default": "latest"
                         },
                         {
                             "key": "desktop",
@@ -51,13 +63,6 @@
                     "key": "autoupdate",
                     "name": "Auto Update",
                     "options": [
-                        {
-                            "key": "startup-enable",
-                            "name": "",
-                            "type": "checkbox",
-                            "text": "Autoupdate Bingwallpaper when tool startup",
-                            "default": "false"
-                        },
                         {
                             "key": "interval",
                             "name": "Interval",
