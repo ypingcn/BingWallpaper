@@ -430,10 +430,12 @@ void OneClickBingWallpaper::showAboutWidget()
     QPixmap emptyPixmap;
     DApplication * app;
 
+    QString version = QString("v%1.%2.%3").arg(QString::number(MAJOR_VERSION), QString::number(MINOR_VERSION), QString::number(PATCH_VERSION));
+
     dialog->setAttribute(Qt::WA_DeleteOnClose) ;
     dialog->setProductIcon(icon);
     dialog->setProductName(app->applicationDisplayName());
-    dialog->setVersion("");
+    dialog->setVersion(QString("%1 #%2").arg(version, OneClickBingWallpaperConfig::latestCommitHash));
     dialog->setAcknowledgementLink("https://github.com/ypingcn/BingWallpaper/wiki/Acknowledgement");
     dialog->setWebsiteName("https://github.com/ypingcn/BingWallpaper");
     dialog->setWebsiteLink("https://github.com/ypingcn/BingWallpaper");
