@@ -6,6 +6,8 @@
 void GenerateSettingTranslate()
 {
     auto base = QObject::tr("Basic");                            // base
+    auto baseFile = QObject::tr("File");                         // base.file
+    auto baseFileImageFolder = QObject::tr("Image Folder");      // base.file.image-folder
     auto baseUpdate = QObject::tr("Update");                     // base.update
     auto baseUpdateType = QObject::tr("Type");                   // base.update.type
     auto baseUpdateDesktop = QObject::tr("Desktop Environment"); // base.update.desktop
@@ -22,7 +24,7 @@ void GenerateSettingTranslate()
     auto baseSecurityPythoncheckText = QObject::tr("Check setting Python file's MD5");
     auto baseOtherLanguageUpdateHintText = QObject::tr("Show hint of restart for updating language")
 
-    auto restoreDefaults = QObject::tr("Restore Defaults");
+        auto restoreDefaults = QObject::tr("Restore Defaults");
 }
 
 #endif // ONECLICKBINGWALLPAPERTRANSLATION_H

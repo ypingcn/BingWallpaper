@@ -6,7 +6,7 @@
             "groups": [
                 {
                     "key":"file",
-                    "name":"file",
+                    "name":"File",
                     "options":[
                         {
                             "key": "image-folder",

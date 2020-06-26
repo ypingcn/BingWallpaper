@@ -252,7 +252,7 @@ void OneClickBingWallpaper::settingsValueChanged(const QString &key, const QVari
         {
             QMessageBox::information(nullptr, tr("Attention! Empty Folder"),
                                      tr("Empty folder for %1 ,\n"
-                                     "if you want to update wallpaper for random, please make sure to put some image file in this folder, or use lastest first").arg(imagePath),
+                                     "if you want to update wallpaper for random, please make sure to put some image file in this folder, or use latest first").arg(imagePath),
                                      QMessageBox::Ok);
         }
     }
@@ -314,7 +314,7 @@ void OneClickBingWallpaper::updateWallpaper(QString argument)
         QMessageBox::StandardButton choice;
         choice = QMessageBox::information(nullptr, tr("Attention! Empty Folder"),
                                 tr("Empty folder for %1.\n"
-                                "If you want to update wallpaper for random, please make sure to put some image file in this folder, or use lastest first.\n"
+                                "If you want to update wallpaper for random, please make sure to put some image file in this folder, or use latest first.\n"
                                 "Setting Abort, click YES to open folder, NO to ignore.").arg(imagePath),
                                 QMessageBox::Yes, QMessageBox::No);
         if(choice == QMessageBox::Yes)
@@ -438,7 +438,7 @@ void OneClickBingWallpaper::showAboutWidget()
     dialog->setWebsiteName("https://github.com/ypingcn/BingWallpaper");
     dialog->setWebsiteLink("https://github.com/ypingcn/BingWallpaper");
     dialog->setCompanyLogo(emptyPixmap);
-    dialog->setDescription(tr("A tool to set lastest Bingwallpaper in Linux desktop."));
+    dialog->setDescription(tr("A tool to set latest Bingwallpaper in Linux desktop."));
     dialog->show();
     dialog->move(( DApplication::desktop()->width()-dialog->width() )/2,( DApplication::desktop()->height()-dialog->height() )/2 );
 }
