@@ -172,8 +172,8 @@ void OneClickBingWallpaper::initSettingOptions()
 
     auto desktopType = dsettings->option("base.update.desktop");
     QMap<QString, QVariant> desktopTypeOptions;
-    desktopTypeOptions.insert("keys", QStringList() << "--auto" << "-d cinnamon" << "-d deepin" << "-d gnome" << "-d kde" << "-d mate" << "-d wm" << "-d xfce" );
-    desktopTypeOptions.insert("values", QStringList() << tr("Auto") << "Cinnamon" << "Deepin" << "Gnome" << "KDE" << "Mate" << "WM" << "Xfce");
+    desktopTypeOptions.insert("keys", QStringList() << "--auto" << "-d cinnamon" << "-d deepin" << "-d gnome" << "-d kde" << "-d lxqt" << "-d mate" << "-d wm" << "-d xfce" );
+    desktopTypeOptions.insert("values", QStringList() << tr("Auto") << "Cinnamon" << "Deepin" << "Gnome" << "KDE" <<"LXQt"<< "Mate" << "WM" << "Xfce");
     desktopType->setData("items", desktopTypeOptions);
 }
 
@@ -375,7 +375,7 @@ void OneClickBingWallpaper::updateWallpaper(QString argument)
         QByteArray error_byte = process->readAllStandardError();
         QString error = error_byte;
         
-        if(!error.isEmpty())
+        if(process->exitCode() != 0  || process->exitStatus() != QProcess::ExitStatus::NormalExit)
         {
             QTextBrowser * text = new QTextBrowser();
             text->resize(400,300);

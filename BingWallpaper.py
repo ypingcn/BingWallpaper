@@ -94,6 +94,11 @@ class BingWallpaper(object):
         try:
             imgLocation = self.json['images'][0]['url']
             self.imgUrl = "%s%s" % ( baseURL, imgLocation )
+            imgArgs = imgLocation.split("&")
+            for imgArg in imgArgs:
+                if imgArg.startswith("/th?id="):
+                    imgLocation = imgArg
+                    break
             lastIndex = imgLocation.rfind(".")
             imgSuffix = imgLocation[lastIndex+1:] # if lastIndex=-1, imgSuffix=imgLocation
             self.imgName = "BingWallpaper-%s.%s" % ( time.strftime("%Y-%m-%d",time.localtime()), imgSuffix )
@@ -152,6 +157,11 @@ class BingWallpaper(object):
             # if 'sh: 1: notify-send: not found' in kde , please install libnotify-bin
             # sudo apt install libnotify-bin
 
+        elif self.de == "lxqt":
+            self.command = "pcmanfm-qt --wallpaper-mode=fit --set-wallpaper=# ".replace("#",self.imgPath)
+            Logger.info("lxqt|status|%s" % str(os.system(self.command)))
+
+
         elif self.de == "mate":
             self.command = "gsettings set org.mate.background picture-filename #".replace("#",self.imgPath)
             Logger.info("mate|status|%s" % str(os.system(self.command)))
@@ -200,6 +210,7 @@ class BingWallpaper(object):
             "cinnamon":"cinnamon",
             "deepin":"deepin",
             "gnome":"gnome",
+            "Lubuntu":"lxqt",
             "mate":"mate",
             "plasma":"kde",
             "xfce":"xfce"
