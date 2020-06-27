@@ -9,7 +9,7 @@ class Logger(object):
     @staticmethod
     def error(content,**kwargs):
         time = datetime.now().strftime("[%Y-%m-%d %H:%M:%S.%f]")
-        path = "%s/BingWallpaper/.oneclickbingwallpaper.log" % os.path.expanduser('~')
+        path = "%s/.oneclickbingwallpaper.log" % os.path.expanduser('~')
 
         if "path" in kwargs:
             path = kwargs["path"]
@@ -23,7 +23,7 @@ class Logger(object):
     @staticmethod
     def info(content,**kwargs):
         time = datetime.now().strftime("[%Y-%m-%d %H:%M:%S.%f]")
-        path = "%s/BingWallpaper/.oneclickbingwallpaper.log" % os.path.expanduser('~')
+        path = "%s/.oneclickbingwallpaper.log" % os.path.expanduser('~')
         if "path" in kwargs:
             path = kwargs["path"]
         
@@ -94,6 +94,11 @@ class BingWallpaper(object):
         try:
             imgLocation = self.json['images'][0]['url']
             self.imgUrl = "%s%s" % ( baseURL, imgLocation )
+            imgArgs = imgLocation.split("&")
+            for imgArg in imgArgs:
+                if imgArg.startswith("/th?id="):
+                    imgLocation = imgArg
+                    break
             lastIndex = imgLocation.rfind(".")
             imgSuffix = imgLocation[lastIndex+1:] # if lastIndex=-1, imgSuffix=imgLocation
             self.imgName = "BingWallpaper-%s.%s" % ( time.strftime("%Y-%m-%d",time.localtime()), imgSuffix )
@@ -101,6 +106,9 @@ class BingWallpaper(object):
         except Exception as e:
             Logger.error("Exception|%s" % str(e) )
             return -1
+
+    def setImageFolder(self,location):
+        self.imgFolder = "%s/%s" %(os.path.expanduser('~'), location)
 
     def setWallpaper(self):
         Logger.info("setting begin")
@@ -149,6 +157,11 @@ class BingWallpaper(object):
             # if 'sh: 1: notify-send: not found' in kde , please install libnotify-bin
             # sudo apt install libnotify-bin
 
+        elif self.de == "lxqt":
+            self.command = "pcmanfm-qt --wallpaper-mode=fit --set-wallpaper=# ".replace("#",self.imgPath)
+            Logger.info("lxqt|status|%s" % str(os.system(self.command)))
+
+
         elif self.de == "mate":
             self.command = "gsettings set org.mate.background picture-filename #".replace("#",self.imgPath)
             Logger.info("mate|status|%s" % str(os.system(self.command)))
@@ -185,6 +198,8 @@ class BingWallpaper(object):
             content = self.imgName
         if os.path.exists(self.notifyIconPath):
             options = "--icon=%s" % self.notifyIconPath
+        else:
+            options = ""
         shell = "notify-send \"%s:%s\" %s" % (time.strftime("%Y-%m-%d",time.localtime()), content, options)
         Logger.info(shell)
         os.system(shell)
@@ -195,6 +210,7 @@ class BingWallpaper(object):
             "cinnamon":"cinnamon",
             "deepin":"deepin",
             "gnome":"gnome",
+            "Lubuntu":"lxqt",
             "mate":"mate",
             "plasma":"kde",
             "xfce":"xfce"
@@ -223,6 +239,8 @@ if __name__ == '__main__':
     parser.add_argument("-c",help="command in your device to set desktop background,{{}} will be replaced with the true images path(not end with \)")
     parser.add_argument("-baseurl",help="[ignore if --random is true] alternative subdomain for bing.com, for example, -baseurl www2.bing.com. "
                                         "must begin with https:// or http://")
+    parser.add_argument("-folder",help="folder location to get or save image folder")
+                                        
     args = parser.parse_args()
 
     bw = BingWallpaper(args.d,args.c)
@@ -231,6 +249,8 @@ if __name__ == '__main__':
         ret = bw.detect()
     if args.silent:
         ret = bw.setSilent()
+    if args.folder:
+        ret = bw.setImageFolder(args.folder)
     if args.random:
         ret = bw.setRandomImage()
     elif args.baseurl:

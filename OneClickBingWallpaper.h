@@ -36,8 +36,8 @@ public:
 
 static QVector<DesktopEnvironmentType> vDesktopEnvironments = {
     {QObject::tr("Cinnamon"),"-d cinnamon"}, {QObject::tr("Deepin"),"-d deepin"},
-    {QObject::tr("Gnome"),"-d gnome"},{QObject::tr("KDE"),"-d kde"},{QObject::tr("Mate"),"-d mate"},
-    {QObject::tr("WM"),"-d wm"},{QObject::tr("Xfce"),"-d xfce"}
+    {QObject::tr("Gnome"),"-d gnome"},{QObject::tr("KDE"),"-d kde"},{QObject::tr("LXQt"),"-d lxqt"},
+    {QObject::tr("Mate"),"-d mate"},{QObject::tr("WM"),"-d wm"},{QObject::tr("Xfce"),"-d xfce"}
 };
 
 static QVector<LanguageType> vLanguages = {
