@@ -109,4 +109,5 @@ Makefile
 moc_*
 qrc_*
 *.o
+*.qm
 OneClickBingWallpaper
