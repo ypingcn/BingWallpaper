@@ -91,6 +91,8 @@ void OneClickBingWallpaper::initAction()
 
     aboutAction = new QAction(tr("About"),this);
 
+    visitBingAction = new QAction(tr("Visit Bing"), this);
+
     quitAction = new QAction(tr("Quit"),this);
 }
 
@@ -119,6 +121,7 @@ void OneClickBingWallpaper::initMenu()
     trayMenu->addMenu(langMenu);
     trayMenu->addAction(settingAction);
     trayMenu->addAction(aboutAction);
+    trayMenu->addAction(visitBingAction);
     trayMenu->addSeparator();
     trayMenu->addAction(quitAction);
     
@@ -142,6 +145,7 @@ void OneClickBingWallpaper::initConnect()
     connect(settingAction,SIGNAL(triggered()),this,SLOT(showSettingWidget()));
 
     connect(aboutAction,SIGNAL(triggered()),this,SLOT(showAboutWidget()));
+    connect(visitBingAction,SIGNAL(triggered()),this,SLOT(visitBing()));
     
     connect(quitAction,&QAction::triggered,[](){
         DApplication * app;
@@ -444,3 +448,9 @@ void OneClickBingWallpaper::showAboutWidget()
     dialog->show();
     dialog->move(( DApplication::desktop()->width()-dialog->width() )/2,( DApplication::desktop()->height()-dialog->height() )/2 );
 }
+
+void OneClickBingWallpaper::visitBing()
+{
+    QDesktopServices::openUrl(QUrl("https://www.bing.com"));
+}
+    

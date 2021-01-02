@@ -62,6 +62,7 @@ private:
 
     QAction * settingAction;
     QAction * aboutAction;
+    QAction * visitBingAction;
 
     QAction * quitAction;
 
@@ -87,6 +88,7 @@ private slots:
 
     void showSettingWidget();
     void showAboutWidget();
+    void visitBing();
 };
 
 #endif // ONECLICKBINGWALLPAPER_H
