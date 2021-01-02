@@ -55,3 +55,20 @@ test：增加测试
 chore：构建过程或辅助工具的变动
 
 例如 ```fix: case insensitive for -d option```
+
+
+##  源码运行程序
+
+```
+sudo apt install qt5-default libdtkwidget-dev
+cd BingWallpaper
+qmake
+make
+```
+
+## 源码构建 DEB 包
+
+```
+sudo apt install build-essential devscripts ubuntu-dev-tools debhelper dh-make patch gnupg fakeroot lintian pbuilder
+debuild
+```

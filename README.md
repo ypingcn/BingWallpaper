@@ -56,3 +56,19 @@ test: add test case
 chore: changes of the building process or tools
 
 i.e. ```fix: case insensitive for -d option```
+
+## Run from source
+
+```
+sudo apt install qt5-default libdtkwidget-dev
+cd BingWallpaper
+qmake
+make
+```
+
+## Build DEB package from source
+
+```
+sudo apt install build-essential devscripts ubuntu-dev-tools debhelper dh-make patch gnupg fakeroot lintian pbuilder
+debuild
+```
