@@ -176,8 +176,8 @@ void OneClickBingWallpaper::initSettingOptions()
 
     auto desktopType = dsettings->option("base.update.desktop");
     QMap<QString, QVariant> desktopTypeOptions;
-    desktopTypeOptions.insert("keys", QStringList() << "--auto" << "-d cinnamon" << "-d deepin" << "-d gnome" << "-d kde" << "-d lxqt" << "-d mate" << "-d wm" << "-d xfce" );
-    desktopTypeOptions.insert("values", QStringList() << tr("Auto") << "Cinnamon" << "Deepin" << "Gnome" << "KDE" <<"LXQt"<< "Mate" << "WM" << "Xfce");
+    desktopTypeOptions.insert("keys", QStringList() << "--auto" << "-d cinnamon" << "-d deepin" << "-d gnome" << "-d kde" << "-d lxqt" << "-d mate" << "-d wm" << "-d xfce" << "-c");
+    desktopTypeOptions.insert("values", QStringList() << tr("Auto") << "Cinnamon" << "Deepin" << "Gnome" << "KDE" <<"LXQt"<< "Mate" << "WM" << "Xfce" << tr("Custom"));
     desktopType->setData("items", desktopTypeOptions);
 }
 
@@ -237,7 +237,6 @@ void OneClickBingWallpaper::settingsValueChanged(const QString &key, const QVari
             auto option = dsettings->option("base.file.image-folder");
             option->setValue(QVariant(imagePath));
         }
-        
     }
     if(key == "base.update.type" && value.toString() == "random")
     {
@@ -258,6 +257,20 @@ void OneClickBingWallpaper::settingsValueChanged(const QString &key, const QVari
                                      tr("Empty folder for %1 ,\n"
                                      "if you want to update wallpaper for random, please make sure to put some image file in this folder, or use latest first").arg(imagePath),
                                      QMessageBox::Ok);
+        }
+    }
+    if(key == "base.update.desktop" && value.toString() == "custom")
+    {
+        QMessageBox::information(nullptr, tr("Attention! Program works in custom update wallpaper command mode"),
+                                     tr("Please pay attention to your custom update wallpaper command."), QMessageBox::Ok);
+    }
+    if(key == "base.update.custom-command")
+    {
+        if(!value.toString().contains("{{}}"))
+        {
+            QMessageBox::warning(nullptr, tr("Attention! Need {{}} placeholder"),
+                                tr("Need {{}} placeholder, it will be replaced to the final image path."),
+                                QMessageBox::Ok);
         }
     }
     if(key == "base.autoupdate.interval")
@@ -294,6 +307,7 @@ void OneClickBingWallpaper::updateWallpaper(QString argument)
     auto imageFolder = dsettings->option("base.file.image-folder");
     auto isNotifyEnable = dsettings->option("base.notification.enable");
     auto subDomain = dsettings->option("base.domain.subdomain");
+    auto customCommand = dsettings->option("base.update.custom-command");
     QDir dir(imagePath);
 
     if (!dir.exists())
@@ -353,6 +367,10 @@ void OneClickBingWallpaper::updateWallpaper(QString argument)
     if (pyFileVaild)
     {
         QProcess * process = new QProcess;
+        if(argument == "-c")
+        {
+            argument = QString("%1 \"%2\"").arg(argument, customCommand->value().toString());
+        }
         QString command = QString("python3 %1 %2").arg(OneClickBingWallpaperConfig::pyFilePath,argument);
         if(isRandom->value().toString() == "random")
         {

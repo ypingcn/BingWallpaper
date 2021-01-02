@@ -176,7 +176,7 @@ class BingWallpaper(object):
 
         elif self.command:
             command = self.command.replace("{{}}",self.imgPath)
-            Logger.info("%s|status|%s" % ( self.command, str(os.system(command)) ) )
+            Logger.info("%s|%s|status|%s" % ( self.command, command, str(os.system(command)) ) )
 
         else:
             Logger.info("NotSupportDesktopEnvironment|%s" % str(self.de))
