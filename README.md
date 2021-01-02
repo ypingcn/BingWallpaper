@@ -1,57 +1,74 @@
 # BingWallpaper
 
-[English Version](/README-en.md)
+[中文版](/README-zh.md)
 
-将当天的必应美图设置为桌面背景（支持图形化和命令行设置）
+Setting everyday's Bing wallpaper as the desktop wallpaper ( GUI and command line supported)
 
-## 使用
+## Usage
 
-### 命令行
+### CLI
 
-本程序的主体部分是```BingWallpaper.py``` 文件，如无需用户界面或者其他情况（例如结合 crontab 做定时更新），可以直接在 Python3 环境中运行
+The main part of this program is ```BingWallpaper.py```, if you don't need GUI or in other situation(like use crontab to update in regular time), you can use this file with Python3
 
 ```bash
-## (需提前安装 Python 的 argparse requests)
-python3 BingWallpaper.py [参数]
+## require python's module: argparse,requests
+python3 BingWallpaper.py [options]
 ```
 
-参数
+options
 
--d 指定桌面环境，暂时支持 cinnamon,deepin,gnome,kde,mate,xfce，欢迎 PR 添加其他桌面环境
+-d specific your desktop environment's name，cinnamon,deepin,gnome,kde,mate,xfce only, welcome your PR for more desktop environment support.
 
--c 自定义更改壁纸的命令，必须包含```{{}}```，此符号将会被替换成图片路径
+-c custom command to update wallpaper,```{{}}``` must be added, and it will be replaced by the path name of image.
 
---auto 自动探测桌面环境，自动选择合适的命令进行设置，如果与 -d 选项同时使用，-d 选项将被忽略
+--auto auto detect your desktop environment and use proper command to update.ignored if -d option is added.
 
---random 随机选择一张壁纸进行设置而非使用当天的壁纸（需自行保证 ~/BingWallpaper 目录不为空且包含图片文件）
+--random random image to update wallpaper instead of using the newest one.(You should make sure ~/BingWallpaper is not empty and contains at least one image file)
 
---silent 成功设置后不发送通知
+--silent no notification after updating successfull.
 
--baseurl 指定 bing.com 的子域名，以防无法获取图片信息。如果与 --random 选项同时使用，--random 选项将被忽略。不使用该选项程序将会在以下子域名自动选择 https://www.bing.com、https://www2.bing.com、https://www4.bing.com、https://cn.bing.com 。自行指定的选项也要在以上四个选项中选择以免出现其他不可预料的问题。
+-baseurl to specific subdomain for bing.com for accident,ignored if --random option is added. https://www.bing.com , https://www2.bing.com , https://www4.bing.com , https://cn.bing.com will be choosed automatically if you don't use this option. And this option's value must be in the above four url to avoid other unknown accident.
 
 
-### 用户界面
+### GUI
 
-用户界面使用了 DTK (Deepin Tool Kit)，无需使用请在源代码中移除相应部分。
+The GUI of this program is built with DTK (Deepin Tool Kit), if you don't need it, remove relavant code manually.
 
-建议 Ubuntu 18.04+、Linuxmint 19+、Deepin 15.9+ 用户下载 release 里的安装包，安装后使用图形化界面一键设置
 
-## 参与贡献
+Ubuntu 18.04+, Linuxmint 19+, Deepin 15.9+ users are recommanded to install deb package in release branch to set wallpaper with the help of GUI.
 
-所有代码修改请在 dev 分支修改后再发 PR，所有的 commit 记录应简洁高效地记录修改原因，使用英文书写 commit，并在内容前加上修改类型，类型如下
+## Contribution
 
-feat：新功能（feature）
+All change must be committed in dev branch before PR, write commit log in English with concise and specific words.Add corresponding type:
 
-fix：修补bug
+feat: new feature
 
-docs：文档（documentation）
+fix: bug fix
 
-style： 格式（不影响代码运行的变动）
+docs: documentation
 
-refactor：重构（即不是新增功能，也不是修改bug的代码变动）
+style: code format ( changes that do not affect code operation )
 
-test：增加测试
+refactor: refactoring ( i.e. code changes that are not new features or bug fixs )
 
-chore：构建过程或辅助工具的变动
+test: add test case
 
-例如 ```fix: case insensitive for -d option```
+chore: changes of the building process or tools
+
+i.e. ```fix: case insensitive for -d option```
+
+## Run from source
+
+```
+sudo apt install qt5-default libdtkwidget-dev
+cd BingWallpaper
+qmake
+make
+```
+
+## Build DEB package from source
+
+```
+sudo apt install build-essential devscripts ubuntu-dev-tools debhelper dh-make patch gnupg fakeroot lintian pbuilder
+debuild
+```

@@ -10,6 +10,7 @@ void GenerateSettingTranslate()
     auto baseFileImageFolder = QObject::tr("Image Folder");      // base.file.image-folder
     auto baseUpdate = QObject::tr("Update");                     // base.update
     auto baseUpdateType = QObject::tr("Type");                   // base.update.type
+    auto baseUpdateCustomCmd = QObject::tr("Custom Update Command");  // base.update.custom-command
     auto baseUpdateDesktop = QObject::tr("Desktop Environment"); // base.update.desktop
     auto baseNotification = QObject::tr("Notification");         // base.notification
     auto baseDomain = QObject::tr("Domain");                     // base.domain
