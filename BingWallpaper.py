@@ -2,7 +2,7 @@
 # -*- coding:utf-8 -*-
 
 from datetime import datetime
-import requests,time,os,argparse,imghdr,random,sys
+import requests,time,os,argparse,filetype,random,sys
 
 class Logger(object):
 
@@ -222,7 +222,12 @@ class BingWallpaper(object):
 
     def setRandomImage(self):
         self.random = True
-        files = [item for item in os.listdir(self.imgFolder) if imghdr.what("%s/%s" % (self.imgFolder, item))]
+        files = []
+        for item in os.listdir(self.imgFolder):
+            filePath = os.path.join(self.imgFolder, item)
+            kind = filetype.guess(filePath)
+            if kind and kind.mime.startswith('image/'):
+                files.append(item)
         self.imgName = files[random.randint(0,len(files)-1)]
         self.imgPath = "%s/%s" % (self.imgFolder, self.imgName)
     
@@ -236,7 +241,7 @@ if __name__ == '__main__':
     parser.add_argument("--random",help="random pick image from default folder to set wallpaper",action="store_true")
     parser.add_argument("--silent",help="do not send notify after finish setting",action="store_true")
     parser.add_argument("-d",help="desktop environment: xfce etc")
-    parser.add_argument("-c",help="command in your device to set desktop background,{{}} will be replaced with the true images path(not end with \)")
+    parser.add_argument("-c",help="command in your device to set desktop background, {{}} will be replaced with the true images path")
     parser.add_argument("-baseurl",help="[ignore if --random is true] alternative subdomain for bing.com, for example, -baseurl www2.bing.com. "
                                         "must begin with https:// or http://")
     parser.add_argument("-folder",help="folder location to get or save image folder")

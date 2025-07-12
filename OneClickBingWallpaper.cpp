@@ -205,14 +205,14 @@ void OneClickBingWallpaper::trayIconActivated(QSystemTrayIcon::ActivationReason 
 
 void OneClickBingWallpaper::settingsValueChanged(const QString &key, const QVariant &value)
 {
-    qDebug() << "settingsValueChanged " << key << " " << value << endl;
+    qDebug() << "settingsValueChanged " << key << " " << value << Qt::endl;
     if(key == "base.file.image-folder")
     {
         QString newImagePath = QString("%1/%2").arg(
             QStandardPaths::standardLocations(QStandardPaths::HomeLocation).first(),
             value.toString());
         QDir dir(newImagePath);
-        qDebug() << "newImagePath" << newImagePath << endl;
+        qDebug() << "newImagePath" << newImagePath << Qt::endl;
         bool bUpdate = true;
         if(!dir.exists())
         {
@@ -220,7 +220,7 @@ void OneClickBingWallpaper::settingsValueChanged(const QString &key, const QVari
                                      tr("BingWallpaper folder %1 in home is not exist, tool will create it by default").arg(newImagePath),
                                      QMessageBox::Ok);
             bool bUpdate = dir.mkdir(newImagePath);
-            qDebug() << "create folder " << newImagePath << ":" << bUpdate << endl;
+            qDebug() << "create folder " << newImagePath << ":" << bUpdate << Qt::endl;
             if(!bUpdate)
             {
                 QMessageBox::information(nullptr, tr("Failed to create folder"),
@@ -241,14 +241,14 @@ void OneClickBingWallpaper::settingsValueChanged(const QString &key, const QVari
     if(key == "base.update.type" && value.toString() == "random")
     {
         QDir dir(imagePath);
-        qDebug() << "imagePath " << imagePath << endl;
+        qDebug() << "imagePath " << imagePath << Qt::endl;
         if (!dir.exists())
         {
             QMessageBox::information(nullptr, tr("Folder Not Found"),
                                      tr("BingWallpaper folder %1 in home is not exist, tool will create it by default").arg(imagePath),
                                      QMessageBox::Ok);
             bool res = dir.mkdir(imagePath);
-            qDebug() << "create folder " << imagePath << ":" << res << endl;
+            qDebug() << "create folder " << imagePath << ":" << res << Qt::endl;
         }
         dir.setFilter(QDir::Files);
         if (dir.entryInfoList().count() == 0)
@@ -316,7 +316,7 @@ void OneClickBingWallpaper::updateWallpaper(QString argument)
                                  tr("BingWallpaper folder %1 in home is not exist, program will create it by default").arg(imagePath),
                                  QMessageBox::Ok);
         bool res = dir.mkdir(imagePath);
-        qDebug() << "create folder " << imagePath << ":" << res << endl;
+        qDebug() << "create folder " << imagePath << ":" << res << Qt::endl;
     }
 
     dir.setFilter(QDir::Files);
@@ -335,10 +335,10 @@ void OneClickBingWallpaper::updateWallpaper(QString argument)
                                 "If you want to update wallpaper for random, please make sure to put some image file in this folder, or use latest first.\n"
                                 "Setting Abort, click YES to open folder, NO to ignore.").arg(imagePath),
                                 QMessageBox::Yes, QMessageBox::No);
-        if(choice == QMessageBox::Yes)
+        if (choice == QMessageBox::Yes)
         {
             bool ok = QDesktopServices::openUrl(QUrl(imagePath));
-            qDebug() << "open folder :" << ok << endl;
+            qDebug() << "open folder :" << ok << Qt::endl;
         }
         return;
     }
@@ -351,7 +351,7 @@ void OneClickBingWallpaper::updateWallpaper(QString argument)
             QCryptographicHash hash(QCryptographicHash::Md5);
             hash.addData(&pyFile);
             QString md5 = hash.result().toHex();
-            qDebug() << OneClickBingWallpaperConfig::pyFilePath << md5;
+            qDebug() << OneClickBingWallpaperConfig::pyFilePath << md5 << Qt::endl;
             if (OneClickBingWallpaperConfig::pyFileMD5 != "{{MD5SUM}}" && md5 != OneClickBingWallpaperConfig::pyFileMD5)
             {
                 QMessageBox::StandardButton choice;
@@ -366,41 +366,47 @@ void OneClickBingWallpaper::updateWallpaper(QString argument)
 
     if (pyFileVaild)
     {
-        QProcess * process = new QProcess;
-        if(argument == "-c")
+        QProcess *process = new QProcess;
+        if (argument == "-c")
         {
             argument = QString("%1 \"%2\"").arg(argument, customCommand->value().toString());
         }
-        QString command = QString("python3 %1 %2").arg(OneClickBingWallpaperConfig::pyFilePath,argument);
-        if(isRandom->value().toString() == "random")
+        QString command = QString("python3");
+        QStringList commandArg;
+        commandArg.append(OneClickBingWallpaperConfig::pyFilePath);
+        commandArg.append(argument);
+        if (isRandom->value().toString() == "random")
         {
-            command += " --random";
+            commandArg.append(" --random");
         }
-        if(!isNotifyEnable->value().toBool())
+        if (!isNotifyEnable->value().toBool())
         {
-            command += " --silent";
+            commandArg.append(" --silent");
         }
-        if(imageFolder->value().toString() != "")
+        if (imageFolder->value().toString() != "")
         {
-            command += " -folder " + imageFolder->value().toString();
+            commandArg.append(" -folder ");
+            commandArg.append(imageFolder->value().toString());
         }
-        if(subDomain->value().toString() != "auto")
+        if (subDomain->value().toString() != "auto")
         {
-            command += " -baseurl " + subDomain->value().toString();
+            commandArg.append(" -baseurl ");
+            commandArg.append(subDomain->value().toString());
         }
 
-        qDebug() << command << endl;
+        qDebug() << "command " << command << Qt::endl;
+        qDebug() << "commandArg " << commandArg << Qt::endl;
 
-        process->start(command);
+        process->start(command, commandArg);
         process->waitForFinished();
 
         QByteArray error_byte = process->readAllStandardError();
         QString error = error_byte;
-        
-        if(process->exitCode() != 0  || process->exitStatus() != QProcess::ExitStatus::NormalExit)
+
+        if (process->exitCode() != 0 || process->exitStatus() != QProcess::ExitStatus::NormalExit)
         {
-            QTextBrowser * text = new QTextBrowser();
-            text->resize(400,300);
+            QTextBrowser *text = new QTextBrowser();
+            text->resize(400, 300);
             text->setWindowTitle(tr("Error"));
             text->append("------------------------------------------------------");
             text->append(tr("Something wrong "));
@@ -410,7 +416,7 @@ void OneClickBingWallpaper::updateWallpaper(QString argument)
             text->append(error);
             text->show();
         }
-        qDebug() << error << endl;
+        qDebug() << "error:" << error << Qt::endl;
     }
 }
 
@@ -419,9 +425,9 @@ void OneClickBingWallpaper::updateLanguage(QString value)
     DApplication * app;
     QSettings settings(app->organizationName(),app->applicationName());
 
-    qDebug() << settings.value("lang") << endl;
+    qDebug() << settings.value("lang") << Qt::endl;
     settings.setValue("lang",value);
-    qDebug() << settings.value("lang") << endl;
+    qDebug() << settings.value("lang") << Qt::endl;
 
     auto hint = dsettings->option("base.other.language-update-hint");
     if(hint->value().toBool())
@@ -430,9 +436,16 @@ void OneClickBingWallpaper::updateLanguage(QString value)
                                 tr("Language update require restart. if update fail, please quit and restart manually"), 
                                 QMessageBox::Ok);
     }
-
+    if (app->arguments().size() <= 0)
+    {
+        QMessageBox::information(nullptr, tr("Unexcepted program argument"),
+                                 tr("Unexcepted program argument"),
+                                 QMessageBox::Ok);
+        return;
+    }
     app->quit();
-    QProcess::startDetached(app->arguments()[0]);
+    QStringList emptyArg;
+    QProcess::startDetached(app->arguments()[0], emptyArg);
 }
 
 void OneClickBingWallpaper::showSettingWidget()

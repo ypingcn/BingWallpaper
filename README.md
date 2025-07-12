@@ -37,6 +37,8 @@ The GUI of this program is built with DTK (Deepin Tool Kit), if you don't need i
 
 Ubuntu 18.04+, Linuxmint 19+, Deepin 15.9+ users are recommanded to install deb package in release branch to set wallpaper with the help of GUI.
 
+[2025.07]: Linuxmint 22.1+ is more recommended now
+
 ## Contribution
 
 All change must be committed in dev branch before PR, write commit log in English with concise and specific words.Add corresponding type:
@@ -64,6 +66,12 @@ sudo apt install qt5-default libdtkwidget-dev
 cd BingWallpaper
 qmake
 make
+```
+
+[2025.07] try following command for new version linux
+
+```
+sudo apt install qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools libdtkwidget-dev 
 ```
 
 ## Build DEB package from source

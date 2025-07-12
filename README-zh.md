@@ -36,6 +36,8 @@ python3 BingWallpaper.py [参数]
 
 建议 Ubuntu 18.04+、Linuxmint 19+、Deepin 15.9+ 用户下载 release 里的安装包，安装后使用图形化界面一键设置
 
+[2025.07]: 更推荐使用 Linuxmint 22.1+
+
 ## 参与贡献
 
 所有代码修改请在 dev 分支修改后再发 PR，所有的 commit 记录应简洁高效地记录修改原因，使用英文书写 commit，并在内容前加上修改类型，类型如下
@@ -56,7 +58,6 @@ chore：构建过程或辅助工具的变动
 
 例如 ```fix: case insensitive for -d option```
 
-
 ##  源码运行程序
 
 ```
@@ -64,6 +65,12 @@ sudo apt install qt5-default libdtkwidget-dev
 cd BingWallpaper
 qmake
 make
+```
+
+[2025.07] 新版本 Linux 系统可以尝试下列命令
+
+```
+sudo apt install qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools libdtkwidget-dev 
 ```
 
 ## 源码构建 DEB 包
