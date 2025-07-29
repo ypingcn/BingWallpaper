@@ -8,31 +8,27 @@ import requests, time, os, argparse, filetype, random, sys
 class Logger(object):
 
     @staticmethod
-    def error(content, **kwargs):
-        time = datetime.now().strftime("[%Y-%m-%d %H:%M:%S.%f]")
+    def _log(level, content, output_stream, **kwargs):
+        time_prefix = datetime.now().strftime("[%Y-%m-%d %H:%M:%S.%f]")
         path = "%s/.oneclickbingwallpaper.log" % os.path.expanduser("~")
 
         if "path" in kwargs:
             path = kwargs["path"]
 
-        str = "%s|error|%s\n" % (time, content)
-        sys.stderr.write(str)
+        level_str = f"{level:<5}"
+        log_str = f"{time_prefix}|{level_str}|{content}\n"
+        output_stream.write(log_str)
 
         with open(path, "a+") as file:
-            file.write(str)
+            file.write(log_str)
+
+    @staticmethod
+    def error(content, **kwargs):
+        Logger._log("error", content, sys.stderr, **kwargs)
 
     @staticmethod
     def info(content, **kwargs):
-        time = datetime.now().strftime("[%Y-%m-%d %H:%M:%S.%f]")
-        path = "%s/.oneclickbingwallpaper.log" % os.path.expanduser("~")
-        if "path" in kwargs:
-            path = kwargs["path"]
-
-        str = "%s|info |%s\n" % (time, content)
-        sys.stdout.write(str)
-
-        with open(path, "a+") as file:
-            file.write(str)
+        Logger._log("info", content, sys.stdout, **kwargs)
 
 
 class Downloader(object):
